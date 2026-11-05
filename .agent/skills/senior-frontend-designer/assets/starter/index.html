@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Título da página | Marca</title>
+  <meta name="description" content="Descrição curta da página (140–160 caracteres).">
+  <meta name="theme-color" content="#ffffff">
+  <script>
+    /* Evita flash de tema: roda antes da pintura */
+    try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t;
+      else if (matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.dataset.theme = 'dark'; } catch {}
+    document.documentElement.classList.add('js');
+  </script>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Ir para o conteúdo</a>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="#" aria-label="Marca – página inicial">Marca</a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="menu">Menu</button>
+      <nav id="menu" class="site-nav" aria-label="Principal" data-open="false">
+        <ul class="site-nav__list">
+          <li><a href="#recursos" aria-current="page">Recursos</a></li>
+          <li><a href="#planos">Planos</a></li>
+          <li><a href="#contato">Contato</a></li>
+        </ul>
+        <button class="btn btn--ghost" data-theme-toggle type="button">Tema</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero container" aria-labelledby="hero-title">
+      <h1 id="hero-title">Título principal da seção hero</h1>
+      <p class="lead">Texto de apoio que explica o valor da proposta em uma ou duas frases.</p>
+      <p class="hero__actions">
+        <a class="btn btn--primary" href="#planos">Ação principal</a>
+        <a class="btn btn--secondary" href="#recursos">Saiba mais</a>
+      </p>
+    </section>
+
+    <section id="recursos" class="section container" aria-labelledby="recursos-title">
+      <h2 id="recursos-title">Recursos</h2>
+      <div class="grid-auto">
+        <article class="card" data-reveal>
+          <h3 class="card__title">Card 1</h3>
+          <p>Descrição curta do recurso.</p>
+        </article>
+        <article class="card" data-reveal>
+          <h3 class="card__title">Card 2</h3>
+          <p>Descrição curta do recurso.</p>
+        </article>
+        <article class="card" data-reveal>
+          <h3 class="card__title">Card 3</h3>
+          <p>Descrição curta do recurso.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="contato" class="section container" aria-labelledby="contato-title">
+      <h2 id="contato-title">Contato</h2>
+      <form class="form" novalidate>
+        <div class="field">
+          <label for="email">E-mail</label>
+          <input id="email" name="email" type="email" autocomplete="email" required aria-describedby="email-error">
+          <p class="field__error" id="email-error"></p>
+        </div>
+        <button class="btn btn--primary" type="submit">Enviar</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container"><p>© 2026 Marca. Todos os direitos reservados.</p></div>
+  </footer>
+
+  <div class="toasts" role="status" aria-live="polite"></div>
+</body>
+</html>

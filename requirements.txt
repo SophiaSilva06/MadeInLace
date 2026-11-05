@@ -1,0 +1,22 @@
+# Framework Web e Servidor
+fastapi>=0.110.0
+uvicorn[standard]>=0.28.0
+
+# Templates e Formulários
+jinja2>=3.1.3
+python-multipart>=0.0.9
+
+# Banco de Dados e ORM (MySQL)
+sqlalchemy>=2.0.28
+pymysql>=1.1.0
+cryptography>=42.0.5
+
+# Configurações e Validação
+pydantic>=2.6.4
+pydantic-settings>=2.2.1
+
+# Qualidade, Linters e Testes
+pytest>=8.1.1
+httpx>=0.27.0
+ruff>=0.3.4
+mypy>=1.9.0

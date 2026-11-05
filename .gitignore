@@ -1,0 +1,37 @@
+# Ambientes virtuais
+.venv/
+venv/
+env/
+ENV/
+
+# Arquivos de ambiente e segredos (Regra 01 - Segurança)
+.env
+.env.*
+!.env.example
+
+# Bytecode Python e caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Logs e arquivos de sistema
+*.log
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs e editores
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Git Worktrees locais (se mantidos na raiz ou subpasta)
+.worktrees/
+worktrees/
