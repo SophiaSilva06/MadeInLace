@@ -1,0 +1,680 @@
+{% extends "base.html" %}
+
+{% block title %}Made In Lace — Moda Feminina, Corsets e Calçados Românticos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/pages/home.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- ========================================================================= -->
+<!-- 3. HERO CAROUSEL: Alterna entre MadeInLaceCarrossel1 e MadeInLaceCarrossel2 -->
+<!-- ========================================================================= -->
+<section class="hero-section" aria-label="Campanhas em Destaque">
+    <div class="hero-carousel" data-carousel="hero" aria-roledescription="carousel" aria-label="Destaques Made In Lace">
+        <!-- Botão Slide Anterior -->
+        <button 
+            type="button" 
+            class="hero-carousel__arrow hero-carousel__arrow--prev" 
+            data-carousel-prev 
+            aria-label="Slide anterior"
+        >
+            <svg width="28" height="48" viewBox="0 0 28 48" fill="none" aria-hidden="true">
+                <path d="M24 4L4 24L24 44" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+
+        <!-- Container de Slides -->
+        <div class="hero-carousel__viewport">
+            <div class="hero-carousel__track" data-carousel-track>
+                <!-- Slide 1 -->
+                <div 
+                    class="hero-carousel__slide is-active" 
+                    role="group" 
+                    aria-roledescription="slide" 
+                    aria-label="1 de 2: Seja Você Mesma, Compre Agora"
+                    data-slide-index="0"
+                >
+                    <a href="/produtos" class="hero-carousel__link" tabindex="0">
+                        <img 
+                            src="{{ url_for('static', path='img/site/MadeInLaceCarrossel1.png') }}" 
+                            alt="Coleção Made In Lace: Seja Você Mesma, Compre Agora" 
+                            class="hero-carousel__image"
+                            width="1366"
+                            height="459"
+                            fetchpriority="high"
+                        >
+                    </a>
+                </div>
+
+                <!-- Slide 2 -->
+                <div 
+                    class="hero-carousel__slide" 
+                    role="group" 
+                    aria-roledescription="slide" 
+                    aria-label="2 de 2: Você é Dona De Si! Aproveite Os 10% De Desconto" 
+                    data-slide-index="1"
+                    aria-hidden="true"
+                >
+                    <a href="/login" class="hero-carousel__link" tabindex="-1">
+                        <img 
+                            src="{{ url_for('static', path='img/site/MadeInLaceCarrossel2.png') }}" 
+                            alt="Coleção Made In Lace: Você é Dona De Si! Aproveite Os 10% De Desconto" 
+                            class="hero-carousel__image"
+                            width="1366"
+                            height="459"
+                            loading="lazy"
+                        >
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botão Próximo Slide -->
+        <button 
+            type="button" 
+            class="hero-carousel__arrow hero-carousel__arrow--next" 
+            data-carousel-next 
+            aria-label="Próximo slide"
+        >
+            <svg width="28" height="48" viewBox="0 0 28 48" fill="none" aria-hidden="true">
+                <path d="M4 4L24 24L4 44" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+
+        <!-- Indicadores de Paginação do Carrossel -->
+        <div class="hero-carousel__indicators" role="tablist" aria-label="Slides do banner">
+            <button type="button" class="hero-carousel__dot is-active" role="tab" aria-selected="true" aria-label="Ir para slide 1" data-slide-to="0"></button>
+            <button type="button" class="hero-carousel__dot" role="tab" aria-selected="false" aria-label="Ir para slide 2" data-slide-to="1"></button>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================================================= -->
+<!-- 4. CARROSSEL 'PROMOÇÕES'                                                  -->
+<!-- ========================================================================= -->
+{% set promo_list = produtos_promocao if produtos_promocao is defined else promocoes %}
+<section class="products-section" aria-labelledby="heading-promocoes">
+    <div class="section-container">
+        <h2 id="heading-promocoes" class="section-title">Promoções</h2>
+
+        <div class="product-carousel" data-carousel="products" aria-roledescription="carousel" aria-label="Carrossel de Promoções">
+            {% if promo_list is not none and promo_list|length == 0 %}
+                <p class="empty-state">Nenhum produto em promoção no momento.</p>
+            {% else %}
+                <!-- Seta Lateral Esquerda -->
+                <button 
+                    type="button" 
+                    class="carousel-nav-arrow carousel-nav-arrow--prev" 
+                    data-carousel-prev 
+                    aria-label="Ver produtos anteriores em promoção"
+                >
+                    <svg width="20" height="36" viewBox="0 0 20 36" fill="none" aria-hidden="true">
+                        <path d="M18 2L2 18L18 34" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+
+                <!-- Trilho de Produtos -->
+                <div class="product-carousel__track-container" data-carousel-track-wrapper>
+                    <ul class="product-carousel__track" data-carousel-track role="list">
+                        {% if promo_list %}
+                            {% for produto in promo_list %}
+                            <li class="product-carousel__item" role="listitem">
+                                <article class="product-card">
+                                    <a href="/produtos/{{ produto.id }}" class="product-card__media-link" aria-label="Ver detalhes de {{ produto.nome }}">
+                                        <div class="product-card__image-box">
+                                            <img 
+                                                src="{{ url_for('static', path=(produto.imagem_principal or produto.imagem_url or 'img/produtos/midday-phantom-dress-1.png')) }}" 
+                                                alt="{{ produto.nome }}" 
+                                                class="product-card__img"
+                                                loading="lazy"
+                                                width="320"
+                                                height="420"
+                                            >
+                                        </div>
+                                    </a>
+
+                                    <div class="product-card__content">
+                                        <h3 class="product-card__title">
+                                            <a href="/produtos/{{ produto.id }}">{{ produto.nome }}</a>
+                                        </h3>
+
+                                        <div class="product-card__pricing-rating">
+                                            <div class="product-card__prices">
+                                                {% if produto.tem_promocao and produto.preco_promocional %}
+                                                    <span class="product-card__price-original">{{ produto.preco|moeda }}</span>
+                                                    <span class="product-card__price-current">{{ produto.preco_promocional|moeda }}</span>
+                                                    {% if produto.porcentagem_promocao and produto.porcentagem_promocao > 0 %}
+                                                    <span class="product-badge product-badge--discount">{{ produto.porcentagem_promocao|desconto }}</span>
+                                                    {% endif %}
+                                                {% elif produto.preco_original and produto.preco_original > produto.preco %}
+                                                    <span class="product-card__price-original">R${{ "%.2f"|format(produto.preco_original)|replace('.', ',') }}</span>
+                                                    <span class="product-card__price-current">R${{ "%.2f"|format(produto.preco)|replace('.', ',') }}</span>
+                                                {% else %}
+                                                    <span class="product-card__price-current">{{ produto.preco|moeda }}</span>
+                                                {% endif %}
+                                            </div>
+
+                                            {% set nota_val = produto.media_avaliacoes if produto.media_avaliacoes is defined else produto.nota %}
+                                            {% if nota_val %}
+                                            <div class="product-card__rating" aria-label="Nota {{ "%.1f"|format(nota_val) }} de 5 estrelas">
+                                                <span class="product-card__rating-value">{{ "%.1f"|format(nota_val) }}</span>
+                                                <span class="product-card__rating-star" aria-hidden="true">★</span>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+
+                                        {% set badge_text = "Best Seller" if (produto.is_best_seller is defined and produto.is_best_seller) else (produto.badge if produto.badge is defined else ("Promoção" if produto.tem_promocao else None)) %}
+                                        {% if badge_text %}
+                                        <div class="product-card__badge-container">
+                                            <span class="product-badge product-badge--{{ badge_text|lower|replace(' ', '-') }}">{{ badge_text }}</span>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </article>
+                            </li>
+                            {% endfor %}
+                        {% else %}
+                            <!-- Fallback visual de altíssima fidelidade baseado no design exato -->
+                            <li class="product-carousel__item" role="listitem">
+                                <article class="product-card">
+                                    <a href="/produtos/4" class="product-card__media-link" aria-label="Ver detalhes de Vestido Curto Floral De Renda">
+                                        <div class="product-card__image-box">
+                                            <img 
+                                                src="{{ url_for('static', path='img/produtos/midday-phantom-dress-1.png') }}" 
+                                                alt="Vestido Curto Floral De Renda" 
+                                                class="product-card__img"
+                                                loading="lazy"
+                                                width="320"
+                                                height="420"
+                                            >
+                                        </div>
+                                    </a>
+                                    <div class="product-card__content">
+                                        <h3 class="product-card__title">
+                                            <a href="/produtos/4">Vestido Curto Floral De Renda</a>
+                                        </h3>
+                                        <div class="product-card__pricing-rating">
+                                            <div class="product-card__prices">
+                                                <span class="product-card__price-original">R$245,00</span>
+                                                <span class="product-card__price-current">190,00</span>
+                                            </div>
+                                            <div class="product-card__rating" aria-label="Nota 4.8 de 5 estrelas">
+                                                <span class="product-card__rating-value">4.8</span>
+                                                <span class="product-card__rating-star" aria-hidden="true">★</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-card__badge-container">
+                                            <span class="product-badge product-badge--bestseller">Best Seller</span>
+                                        </div>
+                                    </div>
+                                </article>
+                            </li>
+
+                            <li class="product-carousel__item" role="listitem">
+                                <article class="product-card">
+                                    <a href="/produtos/10" class="product-card__media-link" aria-label="Ver detalhes de Vestido Fantasioso Longo Bege">
+                                        <div class="product-card__image-box">
+                                            <img 
+                                                src="{{ url_for('static', path='img/produtos/summer-wind-corset-1.png') }}" 
+                                                alt="Vestido Fantasioso Longo Bege" 
+                                                class="product-card__img"
+                                                loading="lazy"
+                                                width="320"
+                                                height="420"
+                                            >
+                                        </div>
+                                    </a>
+                                    <div class="product-card__content">
+                                        <h3 class="product-card__title">
+                                            <a href="/produtos/10">Vestido Fantasioso Longo Bege</a>
+                                        </h3>
+                                        <div class="product-card__pricing-rating">
+                                            <div class="product-card__prices">
+                                                <span class="product-card__price-original">R$320,00</span>
+                                                <span class="product-card__price-current">220,00</span>
+                                            </div>
+                                            <div class="product-card__rating" aria-label="Nota 4.8 de 5 estrelas">
+                                                <span class="product-card__rating-value">4.8</span>
+                                                <span class="product-card__rating-star" aria-hidden="true">★</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                            </li>
+
+                            <li class="product-carousel__item" role="listitem">
+                                <article class="product-card">
+                                    <a href="/produtos/7" class="product-card__media-link" aria-label="Ver detalhes de Vestido Cottagecore Com Corset">
+                                        <div class="product-card__image-box">
+                                            <img 
+                                                src="{{ url_for('static', path='img/produtos/princess-ashley-corset-1.png') }}" 
+                                                alt="Vestido Cottagecore Com Corset" 
+                                                class="product-card__img"
+                                                loading="lazy"
+                                                width="320"
+                                                height="420"
+                                            >
+                                        </div>
+                                    </a>
+                                    <div class="product-card__content">
+                                        <h3 class="product-card__title">
+                                            <a href="/produtos/7">Vestido Cottagecore Com Corset</a>
+                                        </h3>
+                                        <div class="product-card__pricing-rating">
+                                            <div class="product-card__prices">
+                                                <span class="product-card__price-original">R$180,00</span>
+                                                <span class="product-card__price-current">160,00</span>
+                                            </div>
+                                            <div class="product-card__rating" aria-label="Nota 4.8 de 5 estrelas">
+                                                <span class="product-card__rating-value">4.8</span>
+                                                <span class="product-card__rating-star" aria-hidden="true">★</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                            </li>
+
+                            <li class="product-carousel__item" role="listitem">
+                                <article class="product-card">
+                                    <a href="/produtos/6" class="product-card__media-link" aria-label="Ver detalhes de Pink Butterfly Dress">
+                                        <div class="product-card__image-box">
+                                            <img 
+                                                src="{{ url_for('static', path='img/produtos/pink-butterfly-dress-1.png') }}" 
+                                                alt="Pink Butterfly Dress" 
+                                                class="product-card__img"
+                                                loading="lazy"
+                                                width="320"
+                                                height="420"
+                                            >
+                                        </div>
+                                    </a>
+                                    <div class="product-card__content">
+                                        <h3 class="product-card__title">
+                                            <a href="/produtos/6">Pink Butterfly Dress</a>
+                                        </h3>
+                                        <div class="product-card__pricing-rating">
+                                            <div class="product-card__prices">
+                                                <span class="product-card__price-original">R$419,90</span>
+                                                <span class="product-card__price-current">335,92</span>
+                                            </div>
+                                            <div class="product-card__rating" aria-label="Nota 4.9 de 5 estrelas">
+                                                <span class="product-card__rating-value">4.9</span>
+                                                <span class="product-card__rating-star" aria-hidden="true">★</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-card__badge-container">
+                                            <span class="product-badge product-badge--promocao">Promoção</span>
+                                        </div>
+                                    </div>
+                                </article>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <!-- Seta Lateral Direita -->
+                <button 
+                    type="button" 
+                    class="carousel-nav-arrow carousel-nav-arrow--next" 
+                    data-carousel-next 
+                    aria-label="Ver próximos produtos em promoção"
+                >
+                    <svg width="20" height="36" viewBox="0 0 20 36" fill="none" aria-hidden="true">
+                        <path d="M2 2L18 18L2 34" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- ========================================================================= -->
+<!-- 5. CARROSSEL 'BEST SELLERS'                                               -->
+<!-- ========================================================================= -->
+{% set bs_list = produtos_best_sellers if produtos_best_sellers is defined else best_sellers %}
+<section class="products-section" aria-labelledby="heading-bestsellers">
+    <div class="section-container">
+        <h2 id="heading-bestsellers" class="section-title">Best Sellers</h2>
+
+        <div class="product-carousel" data-carousel="products" aria-roledescription="carousel" aria-label="Carrossel de Mais Vendidos">
+            {% if bs_list is not none and bs_list|length == 0 %}
+                <p class="empty-state">Nenhum produto em destaque no momento.</p>
+            {% else %}
+                <!-- Seta Lateral Esquerda -->
+                <button 
+                    type="button" 
+                    class="carousel-nav-arrow carousel-nav-arrow--prev" 
+                    data-carousel-prev 
+                    aria-label="Ver produtos mais vendidos anteriores"
+                >
+                    <svg width="20" height="36" viewBox="0 0 20 36" fill="none" aria-hidden="true">
+                        <path d="M18 2L2 18L18 34" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+
+                <!-- Trilho de Produtos -->
+                <div class="product-carousel__track-container" data-carousel-track-wrapper>
+                    <ul class="product-carousel__track" data-carousel-track role="list">
+                        {% if bs_list %}
+                            {% for produto in bs_list %}
+                            <li class="product-carousel__item" role="listitem">
+                                <article class="product-card">
+                                    <a href="/produtos/{{ produto.id }}" class="product-card__media-link" aria-label="Ver detalhes de {{ produto.nome }}">
+                                        <div class="product-card__image-box">
+                                            <img 
+                                                src="{{ url_for('static', path=(produto.imagem_principal or produto.imagem_url or 'img/produtos/balletcore-heels-1.png')) }}" 
+                                                alt="{{ produto.nome }}" 
+                                                class="product-card__img"
+                                                loading="lazy"
+                                                width="320"
+                                                height="420"
+                                            >
+                                        </div>
+                                    </a>
+
+                                    <div class="product-card__content">
+                                        <h3 class="product-card__title">
+                                            <a href="/produtos/{{ produto.id }}">{{ produto.nome }}</a>
+                                        </h3>
+
+                                        <div class="product-card__pricing-rating">
+                                            <div class="product-card__prices">
+                                                {% if produto.tem_promocao and produto.preco_promocional %}
+                                                    <span class="product-card__price-original">{{ produto.preco|moeda }}</span>
+                                                    <span class="product-card__price-current">{{ produto.preco_promocional|moeda }}</span>
+                                                    {% if produto.porcentagem_promocao and produto.porcentagem_promocao > 0 %}
+                                                    <span class="product-badge product-badge--discount">{{ produto.porcentagem_promocao|desconto }}</span>
+                                                    {% endif %}
+                                                {% elif produto.preco_original and produto.preco_original > produto.preco %}
+                                                    <span class="product-card__price-original">R${{ "%.2f"|format(produto.preco_original)|replace('.', ',') }}</span>
+                                                    <span class="product-card__price-current">R${{ "%.2f"|format(produto.preco)|replace('.', ',') }}</span>
+                                                {% else %}
+                                                    <span class="product-card__price-current">{{ produto.preco|moeda }}</span>
+                                                {% endif %}
+                                            </div>
+
+                                            {% set nota_val = produto.media_avaliacoes if produto.media_avaliacoes is defined else produto.nota %}
+                                            {% if nota_val %}
+                                            <div class="product-card__rating" aria-label="Nota {{ "%.1f"|format(nota_val) }} de 5 estrelas">
+                                                <span class="product-card__rating-value">{{ "%.1f"|format(nota_val) }}</span>
+                                                <span class="product-card__rating-star" aria-hidden="true">★</span>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+
+                                        {% set badge_text = "Best Seller" if (produto.is_best_seller is defined and produto.is_best_seller) else (produto.badge if produto.badge is defined else ("Promoção" if produto.tem_promocao else None)) %}
+                                        {% if badge_text %}
+                                        <div class="product-card__badge-container">
+                                            <span class="product-badge product-badge--{{ badge_text|lower|replace(' ', '-') }}">{{ badge_text }}</span>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </article>
+                            </li>
+                            {% endfor %}
+                        {% else %}
+                            <!-- Fallback visual de altíssima fidelidade baseado no design exato -->
+                            <li class="product-carousel__item" role="listitem">
+                                <article class="product-card">
+                                    <a href="/produtos/8" class="product-card__media-link" aria-label="Ver detalhes de Salto Branco Com Renda Florada">
+                                        <div class="product-card__image-box">
+                                            <img 
+                                                src="{{ url_for('static', path='img/produtos/satin-mary-jane-heels-1.png') }}" 
+                                                alt="Salto Branco Com Renda Florada" 
+                                                class="product-card__img"
+                                                loading="lazy"
+                                                width="320"
+                                                height="420"
+                                            >
+                                        </div>
+                                    </a>
+                                    <div class="product-card__content">
+                                        <h3 class="product-card__title">
+                                            <a href="/produtos/8">Salto Branco Com Renda Florada</a>
+                                        </h3>
+                                        <div class="product-card__pricing-rating">
+                                            <div class="product-card__prices">
+                                                <span class="product-card__price-original">R$180,00</span>
+                                                <span class="product-card__price-current">180,00</span>
+                                            </div>
+                                            <div class="product-card__rating" aria-label="Nota 4.8 de 5 estrelas">
+                                                <span class="product-card__rating-value">4.8</span>
+                                                <span class="product-card__rating-star" aria-hidden="true">★</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-card__badge-container">
+                                            <span class="product-badge product-badge--promocao">Promoção</span>
+                                        </div>
+                                    </div>
+                                </article>
+                            </li>
+
+                            <li class="product-carousel__item" role="listitem">
+                                <article class="product-card">
+                                    <a href="/produtos/2" class="product-card__media-link" aria-label="Ver detalhes de Salto de Couro Marrom Oxford">
+                                        <div class="product-card__image-box">
+                                            <img 
+                                                src="{{ url_for('static', path='img/produtos/dark-coquette-shoes-1.png') }}" 
+                                                alt="Salto de Couro Marrom Oxford" 
+                                                class="product-card__img"
+                                                loading="lazy"
+                                                width="320"
+                                                height="420"
+                                            >
+                                        </div>
+                                    </a>
+                                    <div class="product-card__content">
+                                        <h3 class="product-card__title">
+                                            <a href="/produtos/2">Salto de Couro Marrom Oxford</a>
+                                        </h3>
+                                        <div class="product-card__pricing-rating">
+                                            <div class="product-card__prices">
+                                                <span class="product-card__price-original">R$160,00</span>
+                                                <span class="product-card__price-current">120,00</span>
+                                            </div>
+                                            <div class="product-card__rating" aria-label="Nota 4.8 de 5 estrelas">
+                                                <span class="product-card__rating-value">4.8</span>
+                                                <span class="product-card__rating-star" aria-hidden="true">★</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-card__badge-container">
+                                            <span class="product-badge product-badge--promocao">Promoção</span>
+                                        </div>
+                                    </div>
+                                </article>
+                            </li>
+
+                            <li class="product-carousel__item" role="listitem">
+                                <article class="product-card">
+                                    <a href="/produtos/1" class="product-card__media-link" aria-label="Ver detalhes de Salto Branco Com Plataforma Entrelaçada">
+                                        <div class="product-card__image-box">
+                                            <img 
+                                                src="{{ url_for('static', path='img/produtos/balletcore-heels-1.png') }}" 
+                                                alt="Salto Branco Com Plataforma Entrelaçada" 
+                                                class="product-card__img"
+                                                loading="lazy"
+                                                width="320"
+                                                height="420"
+                                            >
+                                        </div>
+                                    </a>
+                                    <div class="product-card__content">
+                                        <h3 class="product-card__title">
+                                            <a href="/produtos/1">Salto Branco Com Plataforma Entrelaçada</a>
+                                        </h3>
+                                        <div class="product-card__pricing-rating">
+                                            <div class="product-card__prices">
+                                                <span class="product-card__price-current">R$160,00</span>
+                                            </div>
+                                            <div class="product-card__rating" aria-label="Nota 4.8 de 5 estrelas">
+                                                <span class="product-card__rating-value">4.8</span>
+                                                <span class="product-card__rating-star" aria-hidden="true">★</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                            </li>
+
+                            <li class="product-carousel__item" role="listitem">
+                                <article class="product-card">
+                                    <a href="/produtos/3" class="product-card__media-link" aria-label="Ver detalhes de Flower & Mirror Corset">
+                                        <div class="product-card__image-box">
+                                            <img 
+                                                src="{{ url_for('static', path='img/produtos/flower-mirror-corset-1.png') }}" 
+                                                alt="Flower & Mirror Corset" 
+                                                class="product-card__img"
+                                                loading="lazy"
+                                                width="320"
+                                                height="420"
+                                            >
+                                        </div>
+                                    </a>
+                                    <div class="product-card__content">
+                                        <h3 class="product-card__title">
+                                            <a href="/produtos/3">Flower & Mirror Corset</a>
+                                        </h3>
+                                        <div class="product-card__pricing-rating">
+                                            <div class="product-card__prices">
+                                                <span class="product-card__price-current">R$149,90</span>
+                                            </div>
+                                            <div class="product-card__rating" aria-label="Nota 4.7 de 5 estrelas">
+                                                <span class="product-card__rating-value">4.7</span>
+                                                <span class="product-card__rating-star" aria-hidden="true">★</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-card__badge-container">
+                                            <span class="product-badge product-badge--bestseller">Best Seller</span>
+                                        </div>
+                                    </div>
+                                </article>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <!-- Seta Lateral Direita -->
+                <button 
+                    type="button" 
+                    class="carousel-nav-arrow carousel-nav-arrow--next" 
+                    data-carousel-next 
+                    aria-label="Ver próximos produtos mais vendidos"
+                >
+                    <svg width="20" height="36" viewBox="0 0 20 36" fill="none" aria-hidden="true">
+                        <path d="M2 2L18 18L2 34" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- ========================================================================= -->
+<!-- 6. SEÇÃO 'LINHAS': Título centralizado 'Linhas', grid 2x2 com 4 linhas     -->
+<!-- ========================================================================= -->
+<section class="linhas-section" aria-labelledby="heading-linhas">
+    <div class="section-container">
+        <h2 id="heading-linhas" class="linhas-heading">Linhas <span class="visually-hidden">Coleções em Destaque</span></h2>
+
+        {% if linhas is not none and linhas|length == 0 %}
+            <p class="empty-state">Nenhuma coleção encontrada no momento.</p>
+        {% else %}
+            <div class="linhas-grid">
+                {% if linhas %}
+                    {% for linha in linhas %}
+                    <a 
+                        href="/produtos?linha={{ linha.nome|urlencode }}" 
+                        class="linha-card" 
+                        aria-label="Explorar produtos da linha {{ linha.nome }}"
+                    >
+                        <div class="linha-card__image-wrapper">
+                            <img 
+                                src="{{ url_for('static', path=(linha.imagem_destaque or (linha.produtos[0].imagem_principal if linha.produtos else 'img/produtos/morning-dew-corset-1.png'))) }}" 
+                                alt="" 
+                                class="linha-card__image"
+                                loading="lazy"
+                            >
+                        </div>
+                        <div class="linha-card__overlay" aria-hidden="true"></div>
+                        <span class="linha-card__title">{{ linha.nome }}</span>
+                    </a>
+                    {% endfor %}
+                {% else %}
+                    <!-- Fallback das 4 Linhas com fotos de produtos da respectiva linha adaptadas ao box -->
+                    <!-- Card 1: Belezas do Mar -->
+                    <a 
+                        href="/produtos?linha=Belezas+do+Mar" 
+                        class="linha-card" 
+                        aria-label="Explorar produtos da linha Belezas do Mar"
+                    >
+                        <div class="linha-card__image-wrapper">
+                            <img 
+                                src="{{ url_for('static', path='img/produtos/morning-dew-corset-1.png') }}" 
+                                alt="" 
+                                class="linha-card__image"
+                                loading="lazy"
+                            >
+                        </div>
+                        <div class="linha-card__overlay" aria-hidden="true"></div>
+                        <span class="linha-card__title">Belezas do Mar</span>
+                    </a>
+
+                    <!-- Card 2: Florestal -->
+                    <a 
+                        href="/produtos?linha=Florestal" 
+                        class="linha-card" 
+                        aria-label="Explorar produtos da linha Florestal"
+                    >
+                        <div class="linha-card__image-wrapper">
+                            <img 
+                                src="{{ url_for('static', path='img/produtos/princess-ashley-corset-1.png') }}" 
+                                alt="" 
+                                class="linha-card__image"
+                                loading="lazy"
+                            >
+                        </div>
+                        <div class="linha-card__overlay" aria-hidden="true"></div>
+                        <span class="linha-card__title">Florestal</span>
+                    </a>
+
+                    <!-- Card 3: Elegância da Realeza -->
+                    <a 
+                        href="/produtos?linha=Eleg%C3%A2ncia+da+Realeza" 
+                        class="linha-card" 
+                        aria-label="Explorar produtos da linha Elegância da Realeza"
+                    >
+                        <div class="linha-card__image-wrapper">
+                            <img 
+                                src="{{ url_for('static', path='img/produtos/shaking-the-wine-dress-1.png') }}" 
+                                alt="" 
+                                class="linha-card__image"
+                                loading="lazy"
+                            >
+                        </div>
+                        <div class="linha-card__overlay" aria-hidden="true"></div>
+                        <span class="linha-card__title">Elegância da Realeza</span>
+                    </a>
+
+                    <!-- Card 4: Dia a Dia de Verão -->
+                    <a 
+                        href="/produtos?linha=Dia+a+Dia+de+Ver%C3%A3o" 
+                        class="linha-card" 
+                        aria-label="Explorar produtos da linha Dia a Dia de Verão"
+                    >
+                        <div class="linha-card__image-wrapper">
+                            <img 
+                                src="{{ url_for('static', path='img/produtos/summer-wind-corset-1.png') }}" 
+                                alt="" 
+                                class="linha-card__image"
+                                loading="lazy"
+                            >
+                        </div>
+                        <div class="linha-card__overlay" aria-hidden="true"></div>
+                        <span class="linha-card__title">Dia a Dia de Verão</span>
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

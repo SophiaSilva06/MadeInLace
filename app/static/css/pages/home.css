@@ -1,0 +1,477 @@
+/* ==========================================================================
+   MADE IN LACE — HOME PAGE CSS
+   Fidelidade estrita à referência docs/design/32_Made In Lace Home.png
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. SEÇÕES E CONTAINERS
+   -------------------------------------------------------------------------- */
+.section-container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+}
+
+.section-title {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 3.2vw, 2.75rem);
+    font-weight: 400;
+    color: var(--color-text-main);
+    margin-bottom: var(--space-6);
+    letter-spacing: 0.01em;
+}
+
+/* --------------------------------------------------------------------------
+   2. HERO CAROUSEL (Destaque Principal)
+   -------------------------------------------------------------------------- */
+.hero-section {
+    position: relative;
+    width: 100%;
+    background-color: var(--color-header-bg);
+    overflow: hidden;
+}
+
+.hero-carousel {
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.hero-carousel__viewport {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1366 / 459;
+    overflow: hidden;
+}
+
+.hero-carousel__track {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.hero-carousel__slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                visibility 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    pointer-events: none;
+}
+
+/* Slide Ativo (Crossfade suave) */
+.hero-carousel__slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 1;
+    pointer-events: auto;
+}
+
+/* Slides inativos ficam sobrepostos para permitir crossfade */
+.hero-carousel__slide:not(.is-active) {
+    position: absolute;
+    inset: 0;
+}
+
+.hero-carousel__link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    outline-offset: -4px;
+}
+
+.hero-carousel__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+/* Setas Laterais do Hero Carousel */
+.hero-carousel__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 48px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.9);
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
+    transition: transform var(--transition-base), color var(--transition-base), opacity var(--transition-base);
+    opacity: 0.85;
+}
+
+.hero-carousel__arrow:hover {
+    color: #FFFFFF;
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.hero-carousel__arrow--prev {
+    left: clamp(0.75rem, 2vw, 2rem);
+}
+
+.hero-carousel__arrow--next {
+    right: clamp(0.75rem, 2vw, 2rem);
+}
+
+/* Indicadores de Paginação do Hero (Ocultados conforme design de referência para não obstruir o banner) */
+.hero-carousel__indicators {
+    display: none;
+}
+
+/* --------------------------------------------------------------------------
+   3. CARROSSEIS DE PRODUTOS ('Promoções' e 'Best Sellers')
+   -------------------------------------------------------------------------- */
+.products-section {
+    padding: clamp(2.5rem, 5vw, 4.5rem) 0;
+}
+
+.product-carousel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* Setas Laterais dos Produtos (Setas Finas Elegantes) */
+.carousel-nav-arrow {
+    flex-shrink: 0;
+    width: 40px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-main);
+    opacity: 0.75;
+    transition: opacity var(--transition-base), transform var(--transition-base), color var(--transition-base);
+    z-index: 5;
+}
+
+.carousel-nav-arrow:hover:not(:disabled) {
+    opacity: 1;
+    color: var(--color-header-hover);
+    transform: scale(1.12);
+}
+
+.carousel-nav-arrow:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+}
+
+.carousel-nav-arrow--prev {
+    margin-right: var(--space-2);
+}
+
+.carousel-nav-arrow--next {
+    margin-left: var(--space-2);
+}
+
+/* Trilho de Rolagem Suave dos Cards */
+.product-carousel__track-container {
+    flex-grow: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    padding: var(--space-2) 0;
+}
+
+.product-carousel__track-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.product-carousel__track {
+    display: flex;
+    gap: clamp(1.25rem, 2.5vw, 2.5rem);
+    width: max-content;
+}
+
+/* Item do Carrossel (3 cards visíveis simultaneamente no desktop) */
+.product-carousel__item {
+    flex: 0 0 clamp(280px, 28vw, 370px);
+    scroll-snap-align: start;
+}
+
+/* Card de Produto */
+.product-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    transition: transform var(--transition-base);
+}
+
+.product-card__media-link {
+    display: block;
+    width: 100%;
+    outline-offset: 2px;
+}
+
+.product-card__image-box {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background-color: #F8F5F1;
+}
+
+.product-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 550ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.product-card:hover .product-card__img {
+    transform: scale(1.035);
+}
+
+/* Conteúdo Informativo do Card */
+.product-card__content {
+    display: flex;
+    flex-direction: column;
+    padding-top: var(--space-3);
+    flex-grow: 1;
+}
+
+.product-card__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.05rem, 1.3vw, 1.25rem);
+    font-weight: 500;
+    color: var(--color-text-main);
+    line-height: 1.35;
+    margin-bottom: var(--space-2);
+}
+
+.product-card__title a {
+    color: inherit;
+    transition: color var(--transition-base);
+}
+
+.product-card__title a:hover {
+    color: var(--color-header-hover);
+}
+
+/* Linha de Preço e Avaliação */
+.product-card__pricing-rating {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: var(--space-2);
+    gap: var(--space-2);
+}
+
+.product-card__prices {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-family: var(--font-serif);
+    font-variant-numeric: lining-nums tabular-nums;
+    -webkit-font-feature-settings: "lnum" 1, "tnum" 1;
+    font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
+.product-card__price-original {
+    font-size: 0.925rem;
+    color: var(--color-price-original);
+    text-decoration: line-through;
+    font-weight: 600;
+    font-style: normal;
+}
+
+.product-card__price-current {
+    font-size: 1.08rem;
+    color: var(--color-price-current);
+    font-weight: 700;
+    font-style: normal;
+}
+
+.product-card__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: #5D5448;
+}
+
+.product-card__rating-star {
+    color: var(--color-star);
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+/* Badge (Promoção / Best Seller / Desconto) */
+.product-card__badge-container {
+    margin-top: 4px;
+}
+
+.product-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 12px;
+    border-radius: 9999px;
+    font-family: var(--font-serif);
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-style: normal;
+    border: 1px solid var(--color-badge-border);
+    background-color: var(--color-badge-bg);
+    color: var(--color-badge-text);
+    letter-spacing: 0.02em;
+    line-height: 1.35;
+}
+
+/* Selo de desconto específico (-10%) alinhado ao preço */
+.product-badge--discount {
+    padding: 1px 8px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    font-style: normal;
+    line-height: 1.25;
+}
+
+/* --------------------------------------------------------------------------
+   4. SEÇÃO 'LINHAS' (Grid 2x2 com Banners Temáticos)
+   -------------------------------------------------------------------------- */
+.linhas-section {
+    padding: clamp(2rem, 4vw, 3.5rem) 0 clamp(3.5rem, 6vw, 5.5rem);
+}
+
+.linhas-heading {
+    text-align: center;
+    font-family: var(--font-serif);
+    font-size: clamp(2.25rem, 3.8vw, 3rem);
+    font-weight: 400;
+    color: var(--color-text-main);
+    margin-bottom: clamp(1.75rem, 3vw, 2.75rem);
+    letter-spacing: 0.02em;
+}
+
+.linhas-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(1rem, 2.2vw, 2rem);
+}
+
+/* Card Retangular da Linha */
+.linha-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 5.2;
+    min-height: 140px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.linha-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(45, 29, 19, 0.16);
+}
+
+.linha-card__image-wrapper {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.linha-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 35%;
+    transition: transform 650ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.linha-card:hover .linha-card__image {
+    transform: scale(1.05);
+}
+
+/* Película escura para contraste visual estrito (WCAG 2.2 AA) */
+.linha-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.32),
+        rgba(0, 0, 0, 0.42)
+    );
+    z-index: 2;
+    transition: background-color var(--transition-base);
+}
+
+.linha-card:hover .linha-card__overlay {
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.22),
+        rgba(0, 0, 0, 0.34)
+    );
+}
+
+/* Tipografia Destacada da Linha */
+.linha-card__title {
+    position: relative;
+    z-index: 3;
+    font-family: var(--font-serif);
+    font-size: clamp(1.4rem, 2.4vw, 2.25rem);
+    font-weight: 700;
+    color: #FFFFFF;
+    text-align: center;
+    letter-spacing: 0.03em;
+    padding: 0 var(--space-4);
+    text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.85),
+        0 0 16px rgba(0, 0, 0, 0.65);
+    transition: transform var(--transition-base);
+}
+
+.linha-card:hover .linha-card__title {
+    transform: scale(1.02);
+}
+
+/* --------------------------------------------------------------------------
+   5. AJUSTES RESPONSIVOS HOME
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+    .product-carousel__item {
+        flex: 0 0 clamp(260px, 44vw, 340px);
+    }
+}
+
+@media (max-width: 680px) {
+    .linhas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .linha-card {
+        aspect-ratio: 16 / 6.5;
+        min-height: 120px;
+    }
+
+    .product-carousel__item {
+        flex: 0 0 82vw;
+    }
+
+    .carousel-nav-arrow {
+        display: none; /* Navegação via touch swipe no mobile */
+    }
+}

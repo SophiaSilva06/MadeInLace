@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titulo_pagina }} — Made In Lace{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/pages/catalogo.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="catalog-page">
+    <div class="catalog-container">
+        <!-- Título principal da página em caligrafia cursiva elegante -->
+        <header class="catalog-title-wrapper">
+            <h1 class="catalog-page-title">{{ titulo_pagina }}</h1>
+        </header>
+
+        <div class="catalog-layout">
+            <!-- ========================================================================= -->
+            <!-- 1. SIDEBAR LATERAL COM FILTROS                                           -->
+            <!-- ========================================================================= -->
+            <aside class="catalog-sidebar" aria-label="Filtros do Catálogo">
+                <!-- Dropdown de Filtros Globais (Best Sellers com menu hambúrguer) -->
+                <div class="global-filter-box" id="global-filter-box">
+                    <button 
+                        type="button" 
+                        class="global-filter-trigger" 
+                        id="global-filter-trigger" 
+                        aria-haspopup="listbox" 
+                        aria-expanded="false"
+                    >
+                        <span id="global-filter-label">Best Sellers</span>
+                        <div class="global-filter-trigger__icon" aria-hidden="true">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </button>
+
+                    <!-- Menu Expandido dos Filtros Globais (4_MadeInLace ListaFiltros.png) -->
+                    <div class="global-filter-dropdown" id="global-filter-dropdown" role="listbox" hidden>
+                        <button type="button" class="global-filter-option" role="option" data-value="preco_asc">Preço. Baixo Para Alto</button>
+                        <button type="button" class="global-filter-option" role="option" data-value="preco_desc">Preço. Alto para Baixo</button>
+                        <button type="button" class="global-filter-option" role="option" data-value="data_asc">Data. Antigo para Novo</button>
+                        <button type="button" class="global-filter-option" role="option" data-value="data_desc">Data. Novo para Antigo</button>
+                        <button type="button" class="global-filter-option" role="option" data-value="alpha_asc">Alfabético. A-Z</button>
+                        <button type="button" class="global-filter-option" role="option" data-value="alpha_desc">Alfabético. Z-A</button>
+                        <button type="button" class="global-filter-option is-active" role="option" data-value="best_sellers">Best Sellers</button>
+                        <button type="button" class="global-filter-option" role="option" data-value="promocao">Promoção</button>
+                    </div>
+                </div>
+
+                <!-- Painel dos Filtros Específicos com Acordeões -->
+                <div class="filters-accordion-panel">
+                    {% if mostrar_preco %}
+                    {# Filtro 1: Preço #}
+                    <section class="filter-section" id="filter-section-preco">
+                        <button type="button" class="filter-section__header" aria-expanded="true">
+                            <span>Preço</span>
+                            <svg class="filter-section__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                        </button>
+                        <div class="filter-section__body">
+                            <div class="price-filter">
+                                <div class="price-slider-wrapper">
+                                    <span class="price-slider-origin"></span>
+                                    <div class="price-slider-track"></div>
+                                    <span class="price-slider-circle" id="price-slider-circle"></span>
+                                    <input 
+                                        type="range" 
+                                        min="0" 
+                                        max="{{ preco_max_loja }}" 
+                                        value="{{ preco_max_loja }}" 
+                                        id="price-slider-input" 
+                                        class="price-slider-input"
+                                        aria-label="Filtro de preço máximo"
+                                    >
+                                </div>
+                                <div class="price-values-row">
+                                    <div class="price-value-item">
+                                        <span>RS</span>
+                                        <input type="number" id="price-min-input" class="price-input-number" value="0" min="0" max="{{ preco_max_loja }}" aria-label="Preço mínimo">
+                                    </div>
+                                    <span>—</span>
+                                    <div class="price-value-item">
+                                        <span>RS</span>
+                                        <input type="number" id="price-max-input" class="price-input-number" value="{{ preco_max_loja }}" min="0" max="{{ preco_max_loja }}" aria-label="Preço máximo">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    {% endif %}
+
+                    {% if mostrar_tamanho_roupa %}
+                    {# Filtro 2: Tamanho Roupa #}
+                    <section class="filter-section" id="filter-section-tamanho-roupa">
+                        <button type="button" class="filter-section__header" aria-expanded="true">
+                            <span>Tamanho Roupa</span>
+                            <svg class="filter-section__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                        </button>
+                        <div class="filter-section__body">
+                            <ul class="filter-options-list">
+                                {% for tam in ['PP', 'P', 'M', 'G', 'GG', 'G1', 'G2', 'G3', 'G4', 'G5'] %}
+                                <li>
+                                    <label class="filter-checkbox-label">
+                                        <span>{{ tam }}</span>
+                                        <input type="checkbox" value="{{ tam }}" data-filter="tamanho-roupa">
+                                        <span class="custom-checkbox-square" aria-hidden="true"></span>
+                                    </label>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </section>
+                    {% endif %}
+
+                    {% if mostrar_tamanho_sapato %}
+                    {# Filtro 3: Tamanho Sapato #}
+                    <section class="filter-section" id="filter-section-tamanho-sapato">
+                        <button type="button" class="filter-section__header" aria-expanded="true">
+                            <span>Tamanho Sapato</span>
+                            <svg class="filter-section__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                        </button>
+                        <div class="filter-section__body">
+                            <ul class="filter-options-list">
+                                {% for tam in ['34', '35', '36', '37', '38', '39', '40', '41', '42'] %}
+                                <li>
+                                    <label class="filter-checkbox-label">
+                                        <span>{{ tam }}</span>
+                                        <input type="checkbox" value="{{ tam }}" data-filter="tamanho-sapato">
+                                        <span class="custom-checkbox-square" aria-hidden="true"></span>
+                                    </label>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </section>
+                    {% endif %}
+
+                    {% if mostrar_categoria %}
+                    {# Filtro 4: Categoria (Vestidos, Corsets, Sapatos) #}
+                    <section class="filter-section" id="filter-section-categoria">
+                        <button type="button" class="filter-section__header" aria-expanded="true">
+                            <span>Categoria</span>
+                            <svg class="filter-section__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                        </button>
+                        <div class="filter-section__body">
+                            <ul class="filter-options-list">
+                                <li>
+                                    <label class="filter-checkbox-label">
+                                        <span>Vestidos</span>
+                                        <input type="checkbox" value="Vestidos" data-filter="categoria">
+                                        <span class="custom-checkbox-square" aria-hidden="true"></span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label class="filter-checkbox-label">
+                                        <span>Corsets</span>
+                                        <input type="checkbox" value="Corsets" data-filter="categoria">
+                                        <span class="custom-checkbox-square" aria-hidden="true"></span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <label class="filter-checkbox-label">
+                                        <span>Sapatos</span>
+                                        <input type="checkbox" value="Sapatos" data-filter="categoria">
+                                        <span class="custom-checkbox-square" aria-hidden="true"></span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+                    {% endif %}
+                </div>
+            </aside>
+
+            <!-- ========================================================================= -->
+            <!-- 2. COLUNA PRINCIPAL: BARRA DE FILTROS ATIVOS + GRID DE PRODUTOS           -->
+            <!-- ========================================================================= -->
+            <main class="catalog-main-col">
+                <!-- Barra horizontal de filtros não-globais ativos -->
+                <div class="active-filters-bar" id="active-filters-bar" aria-label="Filtros ativos no momento">
+                    {% if linha_ativa %}
+                    <div class="filter-tag">
+                        <span>Linha: {{ linha_ativa }}</span>
+                        <a href="{{ url_remover_linha }}" class="filter-tag__remove" aria-label="Remover filtro de linha">&#10005;</a>
+                    </div>
+                    {% endif %}
+                    {% if nome_ativo %}
+                    <div class="filter-tag">
+                        <span>Nome: {{ nome_ativo }}</span>
+                        <a href="{{ url_remover_nome }}" class="filter-tag__remove" aria-label="Remover filtro de nome">&#10005;</a>
+                    </div>
+                    {% endif %}
+                    {% if pesquisa_ativa %}
+                    <div class="filter-tag">
+                        <span>Pesquisa: {{ pesquisa_ativa }}</span>
+                        <a href="{{ url_remover_pesquisa }}" class="filter-tag__remove" aria-label="Remover termo de busca">&#10005;</a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Grid de Produtos com Renderização Inicial SSR (9 por vez) -->
+                <div class="catalog-products-grid" id="catalog-products-grid" role="list">
+                    {% for p in produtos[:9] %}
+                    <article class="catalog-product-card" role="listitem" data-product-id="{{ p.id }}">
+                        <a href="/produtos/{{ p.id }}" class="catalog-card__media-link" aria-label="Ver detalhes de {{ p.nome }}">
+                            <img 
+                                src="{{ url_for('static', path=p.imagem_principal) }}" 
+                                alt="{{ p.nome }}" 
+                                class="catalog-card__img"
+                                loading="lazy"
+                                width="320" 
+                                height="420"
+                            >
+                        </a>
+                        <div class="catalog-card__content">
+                            <h2 class="catalog-card__title">
+                                <a href="/produtos/{{ p.id }}">{{ p.nome }}</a>
+                            </h2>
+                            <div class="catalog-card__info-row">
+                                <div class="catalog-card__prices">
+                                    {% if p.tem_promocao and p.preco_promocional is not none %}
+                                    <span class="catalog-card__price-original">{{ p.preco|moeda }}</span>
+                                    <span class="catalog-card__price-current">{{ p.preco_promocional|moeda }}</span>
+                                    {% else %}
+                                    <span class="catalog-card__price-current">{{ p.preco|moeda }}</span>
+                                    {% endif %}
+                                </div>
+                                {% if p.media_avaliacoes is not none and p.media_avaliacoes > 0 %}
+                                <div class="catalog-card__rating">
+                                    <span class="catalog-card__rating-val">{{ p.media_avaliacoes|round(1) }}</span>
+                                    <span class="catalog-card__star" aria-hidden="true">&#9733;</span>
+                                    <span class="catalog-card__rating-count">({{ p.total_avaliacoes }})</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% if p.tem_promocao %}
+                            <div class="catalog-card__badges">
+                                <span class="catalog-badge">Promoção</span>
+                            </div>
+                            {% elif p.is_best_seller %}
+                            <div class="catalog-card__badges">
+                                <span class="catalog-badge">Best Seller</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+
+                <!-- Estado Vazio (Produtos Não Encontrados) -->
+                <div class="catalog-empty-state" id="catalog-empty-state" {% if produtos|length > 0 %}hidden{% endif %}>
+                    <h2 class="catalog-empty-state__title">Produtos não encontrados</h2>
+                    <p class="catalog-empty-state__desc">Não encontramos produtos que correspondam à combinação dos filtros selecionados.</p>
+                    <button type="button" class="catalog-empty-state__btn" id="catalog-reset-filters-btn">Limpar todos os filtros</button>
+                </div>
+
+                <!-- Botão "Carregar Mais" -->
+                <div class="catalog-load-more-wrapper">
+                    <button 
+                        type="button" 
+                        class="catalog-load-more-btn" 
+                        id="catalog-load-more-btn"
+                        {% if produtos|length <= 9 %}hidden{% endif %}
+                    >
+                        Carregar Mais
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+<!-- Dados completos serializados para filtragem instantânea sem reload -->
+<script id="produtos-dados" type="application/json">
+{{ produtos_json|tojson|safe }}
+</script>
+{% endblock %}

@@ -1,0 +1,935 @@
+/* ==========================================================================
+   MadeInLace - Página de Perfil (Fidelidade ao Design Anti-Slop)
+   Cores dominantes:
+     - Fundo suave da loja: #F5EBE1
+     - Painéis e abas: #E2C4B7 / #DFC5B8
+     - Caixas marrons profundas: #583219 / #4A2A14
+     - Botões claros com borda: #CFC6BD / #D1C7BD
+     - Botão de ação (Salvar): #7A5230 / #6E492B
+     - Texto em caixas marrons: #FFFFFF
+   ========================================================================== */
+
+:root {
+    --perfil-bg-nude: #E2C4B7;
+    --perfil-bg-subtle: #DFC5B8;
+    --perfil-brown-dark: #583219;
+    --perfil-brown-hover: #4A2A14;
+    --perfil-brown-btn: #7A5230;
+    --perfil-brown-btn-hover: #654123;
+    --perfil-btn-light: #CFC6BD;
+    --perfil-btn-light-border: #583219;
+    --perfil-text-light: #FFFFFF;
+    --perfil-border-line: rgba(88, 50, 25, 0.45);
+}
+
+.perfil-page-container {
+    padding: var(--space-8) 0 var(--space-16);
+    max-width: 1240px;
+    margin: 0 auto;
+}
+
+.perfil-main-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+    align-items: start;
+}
+
+@media (min-width: 860px) {
+    .perfil-main-grid {
+        grid-template-columns: 280px 1fr;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   1. MENU LATERAL (SIDEBAR DE NAVEGAÇÃO)
+   -------------------------------------------------------------------------- */
+.perfil-sidebar {
+    background-color: var(--perfil-bg-nude);
+    padding: var(--space-6) var(--space-4);
+    border-radius: 4px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.perfil-sidebar__nav {
+    display: flex;
+    flex-direction: column;
+}
+
+.perfil-sidebar__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 0.5rem;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    color: var(--color-primary);
+    text-decoration: none;
+    border-bottom: 1px solid var(--perfil-border-line);
+    transition: color 0.2s ease, padding-left 0.2s ease;
+    cursor: pointer;
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    width: 100%;
+    text-align: left;
+}
+
+.perfil-sidebar__link:first-child {
+    border-top: 1px solid var(--perfil-border-line);
+}
+
+.perfil-sidebar__link:hover {
+    color: var(--perfil-brown-hover);
+    padding-left: 0.75rem;
+}
+
+.perfil-sidebar__link.is-active {
+    font-weight: 700;
+    color: var(--perfil-brown-dark);
+}
+
+.perfil-sidebar__chevron {
+    transition: transform 0.25s ease;
+}
+
+.perfil-sidebar__chevron.is-open {
+    transform: rotate(180deg);
+}
+
+/* Submenu de Pedidos */
+.perfil-sidebar__submenu {
+    display: flex;
+    flex-direction: column;
+    padding-left: 1.25rem;
+    background: rgba(255, 255, 255, 0.15);
+    border-bottom: 1px solid var(--perfil-border-line);
+}
+
+.perfil-sidebar__submenu.is-collapsed {
+    display: none;
+}
+
+.perfil-sidebar__sublink {
+    padding: 0.6rem 0.5rem;
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
+}
+
+.perfil-sidebar__sublink:hover {
+    color: var(--perfil-brown-hover);
+    transform: translateX(4px);
+}
+
+.perfil-sidebar__sublink.is-active {
+    font-weight: 700;
+    color: var(--perfil-brown-dark);
+}
+
+/* --------------------------------------------------------------------------
+   2. PAINEL DE CONTEÚDO PRINCIPAL (DIREITA)
+   -------------------------------------------------------------------------- */
+.perfil-content-panel {
+    background-color: var(--perfil-bg-nude);
+    padding: var(--space-8);
+    border-radius: 4px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    min-height: 480px;
+}
+
+.perfil-tab-pane {
+    display: none;
+}
+
+.perfil-tab-pane.is-active {
+    display: block;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Título em Bloco Marrom Escuro */
+.perfil-box-title {
+    background-color: var(--perfil-brown-dark);
+    color: var(--perfil-text-light);
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    text-align: center;
+    padding: 0.75rem 1.5rem;
+    margin: 0 auto var(--space-6);
+    max-width: 440px;
+    border-radius: 2px;
+    letter-spacing: 0.5px;
+}
+
+/* --------------------------------------------------------------------------
+   3. ABA MEU PERFIL (12_MadeInLace Perfil)
+   -------------------------------------------------------------------------- */
+.perfil-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.perfil-form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+}
+
+@media (min-width: 640px) {
+    .perfil-form-row--two {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.perfil-box-field {
+    background-color: var(--perfil-brown-dark);
+    color: var(--perfil-text-light);
+    padding: 0.65rem 1rem;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+}
+
+.perfil-box-field label {
+    white-space: nowrap;
+    margin-right: 0.5rem;
+    cursor: pointer;
+}
+
+.perfil-box-field input {
+    background: transparent;
+    border: none;
+    color: var(--perfil-text-light);
+    font-family: inherit;
+    font-size: 1.15rem;
+    width: 100%;
+    outline: none;
+}
+
+.perfil-box-field input[readonly],
+.perfil-box-field input:disabled {
+    cursor: default;
+    opacity: 0.95;
+}
+
+.perfil-box-field--email {
+    justify-content: space-between;
+}
+
+.perfil-email-trigger-btn {
+    background: transparent;
+    border: none;
+    color: #FAF6F0;
+    text-decoration: underline;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    margin-left: 0.5rem;
+}
+
+.perfil-box-center {
+    display: flex;
+    justify-content: center;
+    margin: var(--space-2) 0;
+}
+
+/* Botões do Perfil */
+.perfil-btn-secondary {
+    background-color: var(--perfil-btn-light);
+    border: 1px solid var(--perfil-btn-light-border);
+    color: var(--perfil-brown-dark);
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    padding: 0.55rem 2.2rem;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+    text-align: center;
+    text-decoration: none;
+}
+
+.perfil-btn-secondary:hover {
+    background-color: #C2B8AE;
+    transform: translateY(-1px);
+}
+
+.perfil-btn-primary {
+    background-color: var(--perfil-brown-btn);
+    color: var(--perfil-text-light);
+    border: none;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    padding: 0.65rem 2.5rem;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.perfil-btn-primary:hover {
+    background-color: var(--perfil-brown-btn-hover);
+    transform: translateY(-1px);
+}
+
+.perfil-support-notice {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    color: var(--color-primary);
+    text-align: center;
+    margin-top: var(--space-6);
+}
+
+/* --------------------------------------------------------------------------
+   4. ABAS DE PEDIDOS (7_MadeInLace Perfil2 & 20_MadeInLace Perfil3)
+   -------------------------------------------------------------------------- */
+.pedidos-container-box {
+    background-color: var(--perfil-brown-dark);
+    padding: var(--space-5);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+.pedido-card-item {
+    background-color: var(--perfil-bg-nude);
+    padding: var(--space-4);
+    border-radius: 2px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 720px) {
+    .pedido-card-item {
+        grid-template-columns: 180px 1fr;
+    }
+}
+
+.pedido-card__carousel-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.pedido-card__badge {
+    background-color: var(--perfil-brown-dark);
+    color: var(--perfil-text-light);
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    padding: 0.35rem 1.25rem;
+    border-radius: 2px;
+    width: 100%;
+    text-align: center;
+}
+
+.pedido-card__arrow-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--perfil-brown-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.2rem;
+    transition: transform 0.15s ease;
+}
+
+.pedido-card__arrow-btn:hover {
+    transform: scale(1.15);
+}
+
+.pedido-card__thumb {
+    width: 110px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid rgba(88, 50, 25, 0.2);
+}
+
+.pedido-card__thumb:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.pedido-card__info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+}
+
+@media (min-width: 580px) {
+    .pedido-card__info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.pedido-info-chip {
+    background-color: var(--perfil-brown-dark);
+    color: var(--perfil-text-light);
+    padding: 0.55rem 0.85rem;
+    border-radius: 2px;
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+}
+
+.pedidos-load-more-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-2);
+}
+
+/* --------------------------------------------------------------------------
+   5. ABA TROCAS E REEMBOLSOS (2_MadeInLace Perfil4)
+   -------------------------------------------------------------------------- */
+.posvenda-intro-text {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    color: var(--color-primary);
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: var(--space-6);
+}
+
+.posvenda-card-item {
+    background-color: var(--perfil-bg-nude);
+    padding: var(--space-4);
+    border-radius: 2px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 680px) {
+    .posvenda-card-item {
+        grid-template-columns: 160px 1fr;
+    }
+}
+
+.posvenda-card__thumb-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.posvenda-card__thumb {
+    width: 105px;
+    height: 135px;
+    object-fit: cover;
+    border-radius: 2px;
+    border: 1px solid rgba(88, 50, 25, 0.2);
+}
+
+/* --------------------------------------------------------------------------
+   6. ABA GUIA DE TAMANHOS (16_MadeInLace Perfil5 & tamanhos_Roupas)
+   -------------------------------------------------------------------------- */
+.size-guide-card {
+    background-color: var(--perfil-brown-btn);
+    padding: var(--space-6);
+    border-radius: 4px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(88, 50, 25, 0.3);
+}
+
+.size-guide-card__title {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    text-align: center;
+    color: #FFFFFF;
+    margin-bottom: var(--space-6);
+    font-weight: 700;
+}
+
+.size-guide-table-responsive {
+    overflow-x: auto;
+}
+
+.size-table-styled {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 5px;
+    font-family: var(--font-serif);
+}
+
+.size-table-styled th {
+    background-color: transparent;
+    color: #FFFFFF;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    letter-spacing: 0.05em;
+}
+
+.size-table-styled td {
+    background-color: #EBDCD0;
+    color: var(--perfil-brown-dark);
+    font-size: 1.05rem;
+    padding: 0.65rem 1rem;
+    text-align: center;
+    border: none;
+}
+
+.size-table-styled td:first-child {
+    background-color: #FAF5F0;
+    font-weight: 700;
+    border-radius: 3px 0 0 3px;
+    color: var(--perfil-brown-dark);
+}
+
+.size-table-styled td:last-child {
+    border-radius: 0 3px 3px 0;
+}
+
+/* --------------------------------------------------------------------------
+   7. ABA CONTATE-NOS (26_MadeInLace Perfil6)
+   -------------------------------------------------------------------------- */
+.contatos-box-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+    margin: var(--space-8) auto;
+    max-width: 480px;
+}
+
+.contatos-box-item {
+    background-color: var(--perfil-brown-dark);
+    color: var(--perfil-text-light);
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    padding: 0.75rem 2.5rem;
+    border-radius: 2px;
+    width: 100%;
+    text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   8. MODAIS ACESSÍVEIS (MODIFICAR ENDEREÇOS, ALTERAR EMAIL, SENHA, ITEM, TROCA)
+   -------------------------------------------------------------------------- */
+.perfil-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    padding: var(--space-4);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.perfil-modal-overlay.is-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.perfil-modal-card {
+    background-color: var(--perfil-bg-nude);
+    padding: var(--space-6) var(--space-8);
+    border-radius: 4px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 620px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    transform: translateY(12px);
+    transition: transform 0.25s ease;
+}
+
+.perfil-modal-overlay.is-active .perfil-modal-card {
+    transform: translateY(0);
+}
+
+.perfil-modal-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    background: none;
+    border: none;
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    color: var(--perfil-brown-dark);
+    cursor: pointer;
+    line-height: 1;
+    transition: transform 0.15s ease;
+}
+
+.perfil-modal-close-btn:hover {
+    transform: scale(1.2);
+}
+
+.perfil-modal-title {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    color: var(--perfil-brown-dark);
+    text-align: center;
+    margin-bottom: var(--space-5);
+}
+
+.perfil-modal-fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.modal-timer-box {
+    height: 46px;
+    min-width: 80px;
+    background-color: var(--perfil-brown-dark, #512E11);
+    color: var(--perfil-text-light, #F6EFE5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    padding: 0 0.75rem;
+    border-radius: 2px;
+}
+
+/* ==========================================================================
+   MODAL DE ENDEREÇOS (MESMO CÓDIGO E DESIGN DO CHECKOUT / 21_MadeInLace Pagamento2)
+   ========================================================================== */
+.checkout-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(62, 33, 8, 0.45);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 200ms ease, visibility 200ms ease;
+    padding: 1rem;
+}
+
+.checkout-modal-backdrop.is-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.checkout-modal-card {
+    background-color: #ECCBB5;
+    border: 1px solid #512E11;
+    width: 100%;
+    max-width: 680px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 2rem 2.25rem;
+    position: relative;
+    border-radius: 2px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    color: #2D1D13;
+}
+
+.checkout-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    background: none;
+    border: none;
+    font-size: 1.75rem;
+    color: #512E11;
+    cursor: pointer;
+    line-height: 1;
+    transition: transform 150ms ease;
+}
+
+.checkout-modal-close:hover {
+    transform: scale(1.15);
+}
+
+.checkout-modal-title {
+    text-align: center;
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: #3E2108;
+    margin: 0 0 1.75rem 0;
+}
+
+.checkout-addresses-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.checkout-address-item-card {
+    background-color: #512E11;
+    border: 1px solid #3E2108;
+    padding: 1.25rem;
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+    transition: border-color 150ms ease, transform 0.2s ease, opacity 0.2s ease;
+}
+
+.checkout-address-item-card.is-selected {
+    border: 2px solid #ECCBB5;
+}
+
+.checkout-address-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.checkout-modal-radio-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: #ECCBB5;
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+}
+
+.checkout-modal-radio-circle {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid #ECCBB5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkout-modal-radio-circle::after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: background-color 150ms ease;
+}
+
+.checkout-address-radio-input:checked + .checkout-modal-radio-circle::after {
+    background-color: #ECCBB5;
+}
+
+.checkout-address-fields-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.checkout-address-fields-grid--full {
+    grid-column: 1 / -1;
+}
+
+.checkout-modal-input {
+    height: 38px;
+    background-color: #ECCBB5;
+    border: 1px solid #3E2108;
+    color: #2D1D13;
+    padding: 0 0.75rem;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.checkout-modal-input::placeholder {
+    color: #63432B;
+    opacity: 0.8;
+}
+
+.checkout-btn-add-more {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    background-color: #ECCBB5;
+    border: 1.5px solid #3E2108;
+    font-size: 1.5rem;
+    font-family: var(--font-serif);
+    color: #3E2108;
+    cursor: pointer;
+    border-radius: 1px;
+    transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.checkout-btn-add-more:hover {
+    background-color: #E2BBA2;
+    transform: scale(1.05);
+}
+
+.checkout-btn-confirm-address {
+    background-color: #512E11;
+    color: #ECCBB5;
+    border: 1px solid #3E2108;
+    padding: 0.75rem 2rem;
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    cursor: pointer;
+    border-radius: 1px;
+    transition: background-color 150ms ease;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.checkout-btn-confirm-address:hover {
+    background-color: #3E2108;
+}
+
+.btn-remover-endereco {
+    background: transparent;
+    border: 1px solid rgba(236, 203, 181, 0.5);
+    color: #ECCBB5;
+    font-family: var(--font-serif);
+    font-size: 0.85rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-remover-endereco:hover {
+    background: rgba(220, 53, 69, 0.4);
+    border-color: #ff9999;
+    color: #FFFFFF;
+}
+
+.btn-remover-endereco:active {
+    transform: scale(0.96);
+}
+
+.btn-remover-endereco:focus-visible {
+    outline: 2px solid #ECCBB5;
+    outline-offset: 2px;
+}
+
+/* Modal Detalhes Item Venda (imagem 23_MadeInLace Perfil2.1) */
+.modal-item-detalhe-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    align-items: center;
+}
+
+@media (min-width: 540px) {
+    .modal-item-detalhe-layout {
+        grid-template-columns: 200px 1fr;
+    }
+}
+
+.modal-item-detalhe__thumb {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    border-radius: 2px;
+}
+
+.modal-item-detalhe__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-family: var(--font-serif);
+}
+
+.modal-item-detalhe__name {
+    font-size: 1.45rem;
+    color: var(--perfil-brown-dark);
+    margin-bottom: 0.5rem;
+}
+
+.modal-item-detalhe__prop {
+    font-size: 1.15rem;
+    color: var(--perfil-brown-dark);
+}
+
+.modal-item-detalhe__actions {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+/* Formulário de Troca / Reembolso (5_MadeInLace Perfil2.2) */
+.form-posvenda-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.posvenda-readonly-chip {
+    background-color: var(--perfil-brown-dark);
+    color: var(--perfil-text-light);
+    padding: 0.65rem 1rem;
+    border-radius: 2px;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    text-align: center;
+}
+
+.posvenda-textarea-field {
+    background-color: var(--perfil-brown-dark);
+    color: var(--perfil-text-light);
+    border: none;
+    border-radius: 2px;
+    padding: 0.75rem 1rem;
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    width: 100%;
+    min-height: 110px;
+    outline: none;
+    resize: vertical;
+}
+
+.posvenda-novo-produto-box {
+    background-color: var(--perfil-brown-dark);
+    color: var(--perfil-text-light);
+    padding: var(--space-4);
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+}
+
+.posvenda-novo-produto-box select {
+    background-color: #E8D3C4;
+    color: var(--perfil-brown-dark);
+    border: none;
+    padding: 0.45rem 0.75rem;
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    border-radius: 2px;
+    outline: none;
+}

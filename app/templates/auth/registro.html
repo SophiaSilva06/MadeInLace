@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar-se — Made In Lace{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/pages/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-page" aria-labelledby="register-title">
+    <div class="auth-container auth-container--wide">
+        <!-- Título Principal fiel a 3_MadeInLace Registro1.png -->
+        <h1 id="register-title" class="auth-heading">Registrar-se</h1>
+
+        <!-- Formulário de Registro -->
+        <form id="register-form" action="/registro" method="post" novalidate>
+            <div class="register-grid">
+                <!-- Linha 1: Email e CPF -->
+                <div class="auth-group">
+                    <label for="reg-email" class="auth-label">Email:</label>
+                    <input 
+                        type="email" 
+                        id="reg-email" 
+                        name="email" 
+                        class="auth-input" 
+                        placeholder="seu-email@exemplo.com" 
+                        autocomplete="email" 
+                        required
+                    >
+                    <p class="auth-field-error" id="email-unique-error" role="alert">email ja usado</p>
+                </div>
+
+                <div class="auth-group">
+                    <label for="reg-cpf" class="auth-label">CPF:</label>
+                    <input 
+                        type="text" 
+                        id="reg-cpf" 
+                        name="cpf" 
+                        class="auth-input" 
+                        placeholder="000.000.000-00" 
+                        maxlength="14" 
+                        required
+                    >
+                    <p class="auth-field-error" id="cpf-unique-error" role="alert">cpf ja usado</p>
+                </div>
+
+                <!-- Linha 2: Nome e Sobrenome -->
+                <div class="auth-group">
+                    <label for="reg-nome" class="auth-label">Nome:</label>
+                    <input 
+                        type="text" 
+                        id="reg-nome" 
+                        name="nome" 
+                        class="auth-input" 
+                        placeholder="Seu nome" 
+                        autocomplete="given-name" 
+                        required
+                    >
+                </div>
+
+                <div class="auth-group">
+                    <label for="reg-sobrenome" class="auth-label">Sobrenome:</label>
+                    <input 
+                        type="text" 
+                        id="reg-sobrenome" 
+                        name="sobrenome" 
+                        class="auth-input" 
+                        placeholder="Seu sobrenome" 
+                        autocomplete="family-name" 
+                        required
+                    >
+                </div>
+
+                <!-- Linha 3: Senha (com verificação de regra de negócio em tempo real) e Nascimento -->
+                <div class="auth-group">
+                    <label for="reg-senha" class="auth-label">
+                        <span>Senha:</span>
+                        <span class="password-indicator-wrapper">
+                            <span 
+                                id="password-check-badge" 
+                                class="password-badge" 
+                                aria-live="polite"
+                            ></span>
+                        </span>
+                    </label>
+                    <input 
+                        type="password" 
+                        id="reg-senha" 
+                        name="senha" 
+                        class="auth-input" 
+                        placeholder="Mín. 12 caracteres (Aa1#)" 
+                        autocomplete="new-password" 
+                        required
+                    >
+                    <p class="password-requirements-hint" id="password-requirements-hint">
+                        Mínimo de 12 e máximo de 128 caracteres, com pelo menos 1 letra maiúscula, 1 minúscula, 1 número e 1 símbolo.
+                    </p>
+                </div>
+
+                <div class="auth-group">
+                    <label for="reg-nascimento" class="auth-label">Nascimento:</label>
+                    <input 
+                        type="text" 
+                        id="reg-nascimento" 
+                        name="nascimento" 
+                        class="auth-input" 
+                        placeholder="DD/MM/AAAA" 
+                        maxlength="10" 
+                        required
+                    >
+                </div>
+
+                <!-- Linha 4: Telefone (Centralizado) -->
+                <div class="auth-group register-grid__full">
+                    <label for="reg-telefone" class="auth-label">Telefone:</label>
+                    <input 
+                        type="tel" 
+                        id="reg-telefone" 
+                        name="telefone" 
+                        class="auth-input" 
+                        placeholder="(00) 00000-0000" 
+                        autocomplete="tel" 
+                        required
+                    >
+                </div>
+            </div>
+
+            <!-- Ações: Botão de Adicionar Endereço e Continuar -->
+            <div class="register-actions">
+                <!-- Badge de resumo do endereço (exibido apenas após o preenchimento do endereço) -->
+                <div class="address-summary-badge" id="address-summary-badge" style="display: none;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span id="address-summary-text"></span>
+                </div>
+
+                <!-- Botão Adicionar Endereço (Abre modal 31_MadeInLace Registro2.png) -->
+                <button 
+                    type="button" 
+                    class="auth-btn-primary" 
+                    id="btn-open-address-modal"
+                    data-modal-open="modal-adicionar-endereco"
+                    aria-haspopup="dialog"
+                    aria-controls="modal-adicionar-endereco"
+                >
+                    Adicionar Endereço
+                </button>
+
+                <!-- Botão Continuar (Abre modal MadeInLace_Autenticar_Email.png) -->
+                <button 
+                    type="button" 
+                    class="auth-btn-primary" 
+                    id="btn-register-continue"
+                    style="margin-top: 1rem; padding: 0.85rem 3.5rem;"
+                >
+                    Continuar
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- =======================================================================
+     MODAL 4: ADICIONAR ENDEREÇO (31_MadeInLace Registro2.png)
+     ======================================================================= -->
+<div 
+    class="auth-modal" 
+    id="modal-adicionar-endereco" 
+    role="dialog" 
+    aria-modal="true" 
+    aria-labelledby="adicionar-endereco-title" 
+    aria-hidden="true"
+>
+    <div class="auth-modal__card" style="max-width: 680px;">
+        <button type="button" class="auth-modal__close" data-modal-close aria-label="Fechar janela de endereços">&times;</button>
+        <h2 id="adicionar-endereco-title" class="auth-modal__title">Adicionar Endereço</h2>
+
+        <!-- Lista dinâmica de endereços com suporte a múltiplos cartões -->
+        <div id="address-cards-list" class="address-card-container">
+            <!-- Injetado dinamicamente via auth.js com pré-seleção do principal -->
+        </div>
+
+        <!-- Box com "+" para adicionar múltiplos endereços -->
+        <div style="text-align: center; margin: 1.5rem 0;">
+            <button 
+                type="button" 
+                id="btn-add-more-address" 
+                class="btn-add-address-box" 
+                aria-label="Adicionar outro endereço"
+                title="Adicionar mais um endereço"
+            >
+                +
+            </button>
+        </div>
+
+        <div style="text-align: center;">
+            <button type="button" id="btn-save-addresses" class="modal-btn-light" style="width: 100%;">
+                Concluir Endereço
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- =======================================================================
+     MODAL 5: AUTENTICAR EMAIL (MadeInLace_Autenticar_Email.png)
+     ======================================================================= -->
+<div 
+    class="auth-modal" 
+    id="modal-autenticar-email" 
+    role="dialog" 
+    aria-modal="true" 
+    aria-labelledby="autenticar-email-title" 
+    aria-hidden="true"
+>
+    <div class="auth-modal__card">
+        <button type="button" class="auth-modal__close" data-modal-close aria-label="Fechar janela de autenticação">&times;</button>
+        <h2 id="autenticar-email-title" class="auth-modal__title">Autenticar Email</h2>
+
+        <div class="email-auth-form">
+            <!-- Botão Enviar Código no topo esquerdo do formulário -->
+            <div class="email-auth-header-action">
+                <button type="button" id="btn-send-email-auth-code" class="modal-btn-light">
+                    Enviar Código
+                </button>
+            </div>
+
+            <!-- Campo Email -->
+            <div>
+                <label for="auth-email-field" class="visually-hidden">Email</label>
+                <input 
+                    type="email" 
+                    id="auth-email-field" 
+                    class="modal-input-dark" 
+                    placeholder="Email: seu-email@exemplo.com"
+                    readonly
+                >
+            </div>
+
+            <!-- Campo Código De Verificação com Timer -->
+            <div class="recovery-row" style="margin-bottom: 0;">
+                <label for="auth-verification-code" class="visually-hidden">Código De Verificação</label>
+                <input 
+                    type="text" 
+                    id="auth-verification-code" 
+                    class="modal-input-dark" 
+                    placeholder="Código De Verificação:"
+                    autocomplete="one-time-code"
+                >
+                <div class="modal-timer-box" id="auth-email-timer-display" aria-label="Tempo restante para validação">0:00</div>
+            </div>
+
+            <!-- Botão Continuar -->
+            <button type="button" id="btn-confirm-email-auth" class="modal-btn-light" style="width: 100%; margin-top: 0.75rem;">
+                Continuar
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="module" src="{{ url_for('static', path='js/modules/auth.js') }}"></script>
+{% endblock %}

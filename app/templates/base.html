@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Made In Lace — Moda feminina, corsets elegantes, vestidos românticos e calçados exclusivos inspirados em estética vintage e coquette.">
+    <meta name="theme-color" content="#EEE6D3">
+
+    <title>{% block title %}Made In Lace — Moda Feminina & Corseteria{% endblock %}</title>
+
+    <!-- Favicon Oficial com Fundo Transparente -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', path='img/site/MadeInLaceLogo.png') }}">
+
+    <!-- Preconexão de fontes tipográficas de alta performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- CSS Base e Tokens Globais -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/components/carrinho.css') }}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="site-body {% block body_class %}{% endblock %}">
+    <!-- Link de acessibilidade para salto de navegação (WCAG 2.2 AA) -->
+    <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+
+    <!-- 1. TOP BAR DE AVISOS E BENEFÍCIOS -->
+    <aside class="top-bar" aria-label="Avisos e benefícios da loja">
+        <div class="top-bar__container">
+            <div class="top-bar__item">
+                <span class="top-bar__dot" aria-hidden="true"></span>
+                <span class="top-bar__text">10% Off Na Primeira Compra Fazendo Login</span>
+            </div>
+            <div class="top-bar__item">
+                <span class="top-bar__dot" aria-hidden="true"></span>
+                <span class="top-bar__text">Frete Grátis A Partir de R$160</span>
+            </div>
+            <div class="top-bar__item">
+                <span class="top-bar__dot" aria-hidden="true"></span>
+                <span class="top-bar__text">Reembolsos E Trocas Por Até 30 Dias</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 2. HEADER PRINCIPAL -->
+    <header class="site-header" role="banner">
+        <div class="header-container">
+            <!-- Logo da Marca -->
+            <a href="/" class="header-logo" aria-label="Made In Lace — Página Inicial">
+                <img 
+                    src="{{ url_for('static', path='img/site/MadeInLaceLogo.png') }}" 
+                    alt="Made In Lace Logo" 
+                    width="50" 
+                    height="50"
+                    class="header-logo__img"
+                >
+            </a>
+
+            <!-- Navegação Primária -->
+            <nav class="site-nav" id="site-nav" aria-label="Navegação principal">
+                <ul class="nav-list" role="menubar">
+                    <li class="nav-item nav-item--has-dropdown" role="none" id="nav-explorar-item">
+                        <a 
+                            href="/produtos" 
+                            class="nav-link nav-link--explorar" 
+                            role="menuitem"
+                            id="nav-explorar-link"
+                            aria-haspopup="true" 
+                            aria-expanded="false"
+                            aria-controls="explorar-dropdown"
+                        >
+                            Explorar
+                        </a>
+
+                        <!-- Aba Dropdown de Linhas Recentes ao passar o mouse (18_Made In lace Explorar.png) -->
+                        <div 
+                            class="explorar-dropdown" 
+                            id="explorar-dropdown" 
+                            role="region" 
+                            aria-label="Linhas recentes de produtos"
+                        >
+                            <div class="explorar-dropdown__container">
+                                <div class="explorar-dropdown__grid">
+                                    {% if linhas_recentes %}
+                                        {% for linha in linhas_recentes %}
+                                        <a 
+                                            href="{{ linha.link_url }}" 
+                                            class="explorar-card explorar-card--{{ 'odd' if loop.index % 2 == 1 else 'even' }}"
+                                            aria-label="Explorar produtos da linha {{ linha.nome }}"
+                                        >
+                                            <div class="explorar-card__img-box">
+                                                <img 
+                                                    src="{{ url_for('static', path=linha.imagem_url) }}" 
+                                                    alt="" 
+                                                    class="explorar-card__img" 
+                                                    width="221" 
+                                                    height="221"
+                                                    loading="lazy"
+                                                >
+                                            </div>
+                                            <span class="explorar-card__title">{{ linha.nome }}</span>
+                                        </a>
+                                        {% endfor %}
+                                    {% else %}
+                                        <!-- 4 Linhas Recentes Padrão da Imagem 18_Made In lace Explorar -->
+                                        <a href="/produtos?linha=Cunty" class="explorar-card explorar-card--odd" aria-label="Explorar produtos da linha Cunty">
+                                            <div class="explorar-card__img-box">
+                                                <img src="{{ url_for('static', path='img/linhas/linha_cunty.png') }}" alt="" class="explorar-card__img" width="221" height="221" loading="lazy">
+                                            </div>
+                                            <span class="explorar-card__title">Cunty</span>
+                                        </a>
+                                        <a href="/produtos?linha=Summer" class="explorar-card explorar-card--even" aria-label="Explorar produtos da linha Summer">
+                                            <div class="explorar-card__img-box">
+                                                <img src="{{ url_for('static', path='img/linhas/linha_summer.png') }}" alt="" class="explorar-card__img" width="221" height="221" loading="lazy">
+                                            </div>
+                                            <span class="explorar-card__title">Summer</span>
+                                        </a>
+                                        <a href="/produtos?linha=Christmas" class="explorar-card explorar-card--odd" aria-label="Explorar produtos da linha Christmas">
+                                            <div class="explorar-card__img-box">
+                                                <img src="{{ url_for('static', path='img/linhas/linha_christmas.png') }}" alt="" class="explorar-card__img" width="221" height="221" loading="lazy">
+                                            </div>
+                                            <span class="explorar-card__title">Christmas</span>
+                                        </a>
+                                        <a href="/produtos?linha=Fairycore" class="explorar-card explorar-card--even" aria-label="Explorar produtos da linha Fairycore">
+                                            <div class="explorar-card__img-box">
+                                                <img src="{{ url_for('static', path='img/linhas/linha_fairycore.png') }}" alt="" class="explorar-card__img" width="221" height="221" loading="lazy">
+                                            </div>
+                                            <span class="explorar-card__title">Fairycore</span>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item" role="none">
+                        <a href="/saltos" class="nav-link" role="menuitem">Saltos</a>
+                    </li>
+                    <li class="nav-item" role="none">
+                        <a href="/corsets" class="nav-link" role="menuitem">Corsets</a>
+                    </li>
+                    <li class="nav-item" role="none">
+                        <a href="/vestidos" class="nav-link" role="menuitem">Vestidos</a>
+                    </li>
+                    <li class="nav-item" role="none">
+                        <a href="/promocao" class="nav-link nav-link--highlight" role="menuitem">Promoção</a>
+                    </li>
+                    <li class="nav-item" role="none">
+                        <a href="/plus-size" class="nav-link" role="menuitem">Plus Size</a>
+                    </li>
+                    <li class="nav-item" role="none">
+                        <a href="/produtos" class="nav-link" role="menuitem">Produtos</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Ações do Header (Busca, Perfil/Login, Sacola) -->
+            <div class="header-actions">
+                {% set user_id_cookie = request.cookies.get('user_id') if (request is defined and request and request.cookies) else None %}
+                {% set user_is_logged = (current_user is defined and current_user) or (user_id_cookie is not none and user_id_cookie != '') %}
+                {% set current_path = (request.url.path ~ ('?' ~ request.url.query if request.url.query else '')) if (request is defined and request and request.url) else '/' %}
+                {% set return_path = '/' if (current_path.startswith('/login') or current_path.startswith('/registro') or current_path.startswith('/logout')) else current_path %}
+
+                <!-- Botão de Busca -->
+                <button 
+                    type="button" 
+                    class="header-action-btn" 
+                    id="search-toggle-btn" 
+                    aria-label="Abrir busca de produtos ou linhas"
+                    aria-haspopup="dialog"
+                    aria-expanded="false"
+                >
+                    <svg class="icon icon-search" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+
+                <!-- Link de Perfil / Login -->
+                <a 
+                    href="{% if user_is_logged %}/perfil{% else %}/login{% if return_path != '/' %}?next={{ return_path|urlencode }}{% endif %}{% endif %}" 
+                    class="header-action-btn" 
+                    aria-label="{% if user_is_logged %}Minha Conta{% if current_user %} ({{ current_user.nome }}){% endif %}{% else %}Entrar ou cadastrar-se{% endif %}"
+                >
+                    <svg class="icon icon-user" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+
+                <!-- Link da Sacola / Carrinho Lateral (17_MadeInLace Carrinho) -->
+                {% set cart_separator = '&' if '?' in return_path else '?' %}
+                {% set cart_login_next = (return_path ~ cart_separator ~ 'abrir_carrinho=1') if return_path != '/' else '/?abrir_carrinho=1' %}
+                <a 
+                    href="{% if user_is_logged %}/carrinho{% else %}/login?next={{ cart_login_next|urlencode }}{% endif %}" 
+                    class="header-action-btn header-action-btn--cart" 
+                    id="cart-drawer-toggle-btn"
+                    data-authenticated="{% if user_is_logged %}true{% else %}false{% endif %}"
+                    aria-label="{% if user_is_logged %}Abrir sacola de compras{% if cart_count and cart_count > 0 %}: {{ cart_count }} itens{% endif %}{% else %}Fazer login para acessar a sacola{% endif %}"
+                    aria-haspopup="dialog"
+                >
+                    <svg class="icon icon-bag" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    {% if cart_count and cart_count > 0 %}
+                    <span class="cart-count-badge" aria-hidden="true">{{ cart_count }}</span>
+                    {% endif %}
+                </a>
+
+                <!-- Botão Menu Mobile -->
+                <button 
+                    type="button" 
+                    class="mobile-menu-btn" 
+                    id="mobile-menu-btn" 
+                    aria-label="Alternar menu de navegação" 
+                    aria-expanded="false" 
+                    aria-controls="site-nav"
+                >
+                    <span class="mobile-menu-btn__bar"></span>
+                    <span class="mobile-menu-btn__bar"></span>
+                    <span class="mobile-menu-btn__bar"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Barra expansível de busca rápida sobreposta ao Nav (27_MadeInLace Pesquisa & 9_MadeInLace Pesquisa2) -->
+        <div class="search-drawer" id="search-drawer" hidden>
+            <form action="/produtos" method="get" class="search-drawer__form" role="search">
+                <input type="hidden" name="tipo_busca" id="search-mode-input" value="tudo">
+                <div class="search-drawer__container">
+                    <div class="search-drawer__field">
+                        <input 
+                            type="search" 
+                            name="q" 
+                            id="header-search-input" 
+                            class="search-drawer__input" 
+                            placeholder=""
+                            autocomplete="off"
+                            aria-label="Digitar termo para pesquisar"
+                        >
+                    </div>
+
+                    <div class="search-drawer__actions">
+                        <!-- Botão com ícone da lupa que submete a busca -->
+                        <button type="submit" class="search-drawer__submit-btn" aria-label="Executar pesquisa">
+                            <svg class="search-drawer__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </button>
+
+                        <!-- Seletor Dropdown: Pesquisar Por: Tudo / Produtos / Linhas -->
+                        <div class="search-mode-selector" id="search-mode-selector">
+                            <button 
+                                type="button" 
+                                class="search-mode-btn" 
+                                id="search-mode-btn" 
+                                aria-haspopup="listbox" 
+                                aria-expanded="false"
+                            >
+                                <span id="search-mode-label">Pesquisar Por: Tudo</span>
+                            </button>
+                            <div class="search-mode-dropdown" id="search-mode-dropdown" role="listbox" hidden>
+                                <button type="button" class="search-mode-item is-selected" role="option" aria-selected="true" data-mode="tudo">Tudo</button>
+                                <button type="button" class="search-mode-item" role="option" aria-selected="false" data-mode="produtos">Produtos</button>
+                                <button type="button" class="search-mode-item" role="option" aria-selected="false" data-mode="linhas">Linhas</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </header>
+
+    <!-- 3. CONTEÚDO PRINCIPAL (INJETADO PELAS PÁGINAS) -->
+    <main id="main-content" class="site-main" role="main" tabindex="-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- 7. FOOTER DA LOJA -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="footer-container">
+            <!-- Coluna 1: Sobre Nós -->
+            <div class="footer-col">
+                <h3 class="footer-col__title">Sobre Nós</h3>
+                <ul class="footer-col__list">
+                    <li><a href="#" class="footer-col__link">MadeInLace</a></li>
+                    <li><a href="#" class="footer-col__link">Nosso Blog</a></li>
+                </ul>
+            </div>
+
+            <!-- Coluna 2: Ajuda e Informações -->
+            <div class="footer-col">
+                <h3 class="footer-col__title">Ajuda e Informações</h3>
+                <ul class="footer-col__list">
+                    <li>
+                        <a href="{% if user_is_logged %}/perfil/tamanhos{% else %}/login?next=/perfil/tamanhos{% endif %}" class="footer-col__link">
+                            Guia de Tamanhos
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% if user_is_logged %}/perfil/contatos{% else %}/login?next=/perfil/contatos{% endif %}" class="footer-col__link">
+                            Contatos
+                        </a>
+                    </li>
+                    <li>
+                        <!-- Redireciona para o login com retorno caso não esteja autenticado -->
+                        <a href="{% if user_is_logged %}/perfil/pedidos{% else %}/login?next=/perfil/pedidos{% endif %}" class="footer-col__link">
+                            Retorno e Troca
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Coluna 3: Faça Login e Receba 10% Na Sua Primeira Compra -->
+            <div class="footer-col footer-col--newsletter">
+                <h3 class="footer-col__title">Faça Login e Receba 10% Na Sua Primeira Compra</h3>
+                
+                <!-- Formulário com redirecionamento para login com e-mail preenchido -->
+                <form action="/login" method="get" class="footer-newsletter-form" id="footer-newsletter-form" novalidate>
+                    <div class="footer-newsletter-field">
+                        <label for="footer-email-input" class="visually-hidden">Digite seu e-mail para receber 10% na primeira compra</label>
+                        <input 
+                            type="email" 
+                            name="email" 
+                            id="footer-email-input" 
+                            class="footer-newsletter-input" 
+                            placeholder="seu-email@exemplo.com" 
+                            required 
+                            autocomplete="email"
+                        >
+                        <button type="submit" class="footer-newsletter-submit" aria-label="Ir para login com e-mail preenchido e garantir 10% de desconto">
+                            <span class="footer-newsletter-arrow" aria-hidden="true">&rarr;</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Ícones de Redes Sociais com paleta autêntica -->
+                <nav class="footer-socials" aria-label="Redes sociais da Made In Lace">
+                    <!-- Facebook -->
+                    <a href="#" class="footer-social-link footer-social-link--facebook" aria-label="Facebook da Made In Lace" rel="noopener noreferrer">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="12" cy="12" r="12" fill="#1877F2"/>
+                            <path d="M15.12 12.35l.48-3.13h-3v-2.03c0-.86.42-1.7 1.77-1.7h1.37V2.82c-.82-.11-1.65-.17-2.48-.16-2.53 0-4.18 1.54-4.18 4.31v2.25H6.3v3.13h2.76V20a12.04 12.04 0 003.5 0v-7.65h2.56z" fill="#FFFFFF"/>
+                        </svg>
+                    </a>
+
+                    <!-- Instagram -->
+                    <a href="#" class="footer-social-link footer-social-link--instagram" aria-label="Instagram da Made In Lace" rel="noopener noreferrer">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <defs>
+                                <radialGradient id="ig-grad-base" cx="30%" cy="107%" r="150%">
+                                    <stop offset="0%" stop-color="#fdf497"/>
+                                    <stop offset="5%" stop-color="#fdf497"/>
+                                    <stop offset="45%" stop-color="#fd5949"/>
+                                    <stop offset="60%" stop-color="#d6249f"/>
+                                    <stop offset="90%" stop-color="#285AEB"/>
+                                </radialGradient>
+                            </defs>
+                            <circle cx="12" cy="12" r="12" fill="url(#ig-grad-base)"/>
+                            <path d="M15.5 6.5h-7A2 2 0 006.5 8.5v7a2 2 0 002 2h7a2 2 0 002-2v-7a2 2 0 00-2-2zm-3.5 8.2a2.7 2.7 0 110-5.4 2.7 2.7 0 010 5.4zm3.6-5.4a.7.7 0 110-1.4.7.7 0 010 1.4zm-3.6 1.1a1.6 1.6 0 100 3.2 1.6 1.6 0 000-3.2z" fill="#FFFFFF"/>
+                        </svg>
+                    </a>
+
+                    <!-- TikTok -->
+                    <a href="#" class="footer-social-link footer-social-link--tiktok" aria-label="TikTok da Made In Lace" rel="noopener noreferrer">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="12" cy="12" r="12" fill="#010101"/>
+                            <path d="M16.5 9.1a3.6 3.6 0 01-2.1-.7V14a3.5 3.5 0 11-3.5-3.5c.2 0 .4 0 .6.1v1.8a1.7 1.7 0 101.2 1.6V5.5h1.7a3.4 3.4 0 002.1 2.4V9.1z" fill="#FFFFFF"/>
+                        </svg>
+                    </a>
+
+                    <!-- Pinterest -->
+                    <a href="#" class="footer-social-link footer-social-link--pinterest" aria-label="Pinterest da Made In Lace" rel="noopener noreferrer">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="12" cy="12" r="12" fill="#BD081C"/>
+                            <path d="M12 5.5c-3.6 0-6.5 2.7-6.5 6.1 0 2.2 1.3 4.1 3.2 5 .1.1.2 0 .3-.1l.3-1.1c0-.1 0-.2-.1-.3-.6-.7-.9-1.6-.9-2.7 0-2.6 2-5 5.3-5 2.8 0 4.4 1.7 4.4 4 0 3-1.7 5.2-4 5.2-1.3 0-2.2-.9-1.9-2.1.3-1.4.9-2.9.9-3.9 0-.9-.5-1.7-1.6-1.7-1.3 0-2.3 1.3-2.3 3.1 0 1.1.4 1.9.4 1.9s-1.4 6-1.6 7c-.3 1.2-.1 3-.1 3.1 0 .1.1.1.2.1.1 0 1.5-2.1 2-4 .2-.8 1-4 1-4 .4.8 1.6 1.5 2.9 1.5 3.8 0 6.4-3.5 6.4-7.8 0-3.6-3.1-6.3-7-6.3z" fill="#FFFFFF"/>
+                        </svg>
+                    </a>
+
+                    <!-- YouTube -->
+                    <a href="#" class="footer-social-link footer-social-link--youtube" aria-label="YouTube da Made In Lace" rel="noopener noreferrer">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="12" cy="12" r="12" fill="#FF0000"/>
+                            <path d="M17.3 9.4s-.2-1.1-.7-1.6c-.6-.7-1.3-.7-1.6-.7C12.8 7 12 7 12 7s-.8 0-3 .1c-.3 0-1 .1-1.6.7-.5.5-.7 1.6-.7 1.6S6.5 10.7 6.5 12v1.2c0 1.3.2 2.6.2 2.6s.2 1.1.7 1.6c.6.7 1.4.6 1.8.7 1.3.1 2.8.1 2.8.1s.8 0 3-.1c.3 0 1-.1 1.6-.7.5-.5.7-1.6.7-1.6s.2-1.3.2-2.6V12c0-1.3-.2-2.6-.2-2.6zM10.8 13.9V9.9l4 2-4 2z" fill="#FFFFFF"/>
+                        </svg>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Linha de Copyright -->
+        <div class="footer-bottom">
+            <div class="footer-bottom__container">
+                <p class="footer-bottom__copy">&copy; 2026 Made In Lace. Todos os direitos reservados. Projeto acadêmico de demonstração.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Carrinho Lateral Flutuante (17_MadeInLace Carrinho & 22_MadeInLace Carrinho2) -->
+    {% include "components/carrinho_drawer.html" %}
+
+    <!-- Scripts Modulares Vanilla -->
+    <script type="module" src="{{ url_for('static', path='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

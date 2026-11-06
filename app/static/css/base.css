@@ -1,0 +1,987 @@
+/* ==========================================================================
+   MADE IN LACE — BASE CSS & DESIGN TOKENS
+   Fidelidade visual estrita a partir de docs/design/32_Made In Lace Home.png
+   Arquitetura CSS moderna, WCAG 2.2 AA e responsividade fluida.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. DESIGN TOKENS
+   -------------------------------------------------------------------------- */
+:root {
+    /* Cores Globais da Marca (Amostragem Exata do Design) */
+    --color-topbar-bg: #EDC9AF;          /* Fundo suave pêssego/apricot da top bar */
+    --color-topbar-text: #633911;        /* Texto marrom escuro de alto contraste */
+    --color-topbar-dot: #633911;         /* Marcador circular marrom escuro */
+
+    --color-header-bg: #EEE6D3;          /* Fundo linho / creme do header */
+    --color-header-text: #4A2E1B;        /* Tipografia primária das seções do menu (marrom escuro) */
+    --color-header-hover: #714722;       /* Tom caramelo no hover */
+    --color-header-highlight: #915F3F;   /* Destaque suave (ex: Promoção) */
+
+    --color-body-bg: #FFFFFF;            /* Fundo branco limpo do catálogo */
+    --color-text-main: #4A2E1B;          /* Marrom escuro refinado para títulos e textos */
+    --color-text-secondary: #714722;     /* Marrom médio elegante */
+    --color-text-muted: #8C7B72;         /* Cinza acastanhado para preços antigos/legenda */
+    --color-border-subtle: #E8DFD3;      /* Divisores e bordas refinadas */
+
+    /* Preços e Badges */
+    --color-price-original: #8C7B72;     /* Preço anterior riscado */
+    --color-price-current: #4A2E1B;      /* Preço atual / promocional (marrom escuro) */
+    --color-badge-bg: #F8ECE4;           /* Preenchimento suave pêssego dos selos */
+    --color-badge-border: #D5A98D;       /* Borda do badge */
+    --color-badge-text: #68381E;         /* Texto do selo com alto contraste e legibilidade */
+    --color-star: #C29B7F;               /* Dourado suave para estrela de avaliação */
+
+    /* Footer */
+    --color-footer-bg: #EEE6D3;          /* Mesmo linho aconchegante do header */
+    --color-footer-border: #E2D6C0;      /* Divisor do rodapé */
+    --color-footer-text: #4A2E1B;        /* Títulos e links do rodapé (marrom escuro) */
+    --color-footer-input-border: #4A2E1B;/* Linha inferior de input do formulário */
+
+    /* Acessibilidade & Foco */
+    --color-focus-ring: #8C532E;         /* Anel de foco acessível (mínimo 3:1 de contraste) */
+
+    /* Tipografia */
+    --font-serif: 'Playfair Display', 'Cormorant Garamond', Didot, 'Bodoni MT', Georgia, serif;
+    --font-sans: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    /* Escala Tipográfica Fluida */
+    --font-size-xs: 0.75rem;             /* 12px */
+    --font-size-sm: 0.875rem;            /* 14px */
+    --font-size-base: 1rem;              /* 16px */
+    --font-size-md: 1.125rem;            /* 18px */
+    --font-size-lg: 1.25rem;             /* 20px */
+    --font-size-xl: 1.5rem;              /* 24px */
+    --font-size-2xl: 2rem;               /* 32px */
+    --font-size-3xl: 2.5rem;             /* 40px */
+    --font-size-hero: clamp(2rem, 4.5vw, 3.5rem);
+
+    /* Espaçamentos Consistentes */
+    --space-1: 0.25rem;   /* 4px */
+    --space-2: 0.5rem;    /* 8px */
+    --space-3: 0.75rem;   /* 12px */
+    --space-4: 1rem;      /* 16px */
+    --space-5: 1.25rem;   /* 20px */
+    --space-6: 1.5rem;    /* 24px */
+    --space-8: 2rem;      /* 32px */
+    --space-10: 2.5rem;   /* 40px */
+    --space-12: 3rem;     /* 48px */
+    --space-16: 4rem;     /* 64px */
+
+    /* Layout & Containers */
+    --container-max-width: 1366px;
+    --container-padding: clamp(1rem, 3.5vw, 3rem);
+
+    /* Transições Suaves */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --transition-bounce: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* --------------------------------------------------------------------------
+   2. RESET MODERNO & ESTILOS BASE
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    background-color: var(--color-body-bg);
+    color: var(--color-text-main);
+    font-family: var(--font-sans);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--color-text-main);
+}
+
+img,
+svg,
+picture {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--transition-base);
+}
+
+button {
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+ul,
+ol {
+    list-style: none;
+}
+
+/* Acessibilidade WCAG 2.2: Foco Visível para Navegação por Teclado */
+:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
+/* Link de Salto de Conteúdo para Leitores de Tela / Usuários de Teclado */
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: var(--space-4);
+    background: var(--color-text-main);
+    color: #FFFFFF;
+    padding: var(--space-2) var(--space-4);
+    z-index: 9999;
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    border-radius: 0 0 4px 4px;
+    transition: top var(--transition-fast);
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Utilitário para Esconder Elementos Visualmente mantendo para Leitores de Tela */
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. TOP BAR DE AVISOS
+   -------------------------------------------------------------------------- */
+.top-bar {
+    background-color: var(--color-topbar-bg);
+    color: var(--color-topbar-text);
+    padding: var(--space-2) var(--container-padding);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    border-bottom: 1px solid rgba(99, 57, 17, 0.08);
+}
+
+.top-bar__container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+}
+
+.top-bar__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.top-bar__dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    background-color: var(--color-topbar-dot);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.top-bar__text {
+    font-family: var(--font-sans);
+    letter-spacing: 0.01em;
+}
+
+/* --------------------------------------------------------------------------
+   4. SITE HEADER & NAVEGAÇÃO
+   -------------------------------------------------------------------------- */
+.site-header {
+    background-color: var(--color-header-bg);
+    border-bottom: 1px solid var(--color-border-subtle);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 1px 4px rgba(45, 29, 19, 0.03);
+}
+
+.header-container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0.75rem var(--container-padding);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+}
+
+/* Logo */
+.header-logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    transition: opacity var(--transition-base);
+}
+
+.header-logo:hover {
+    opacity: 0.88;
+}
+
+.header-logo__img {
+    height: 50px;
+    width: 50px;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+}
+
+/* Navegação Central */
+.site-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.nav-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1rem, 2.2vw, 2.25rem);
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-link {
+    font-family: var(--font-serif);
+    font-size: clamp(1rem, 1.3vw, 1.25rem);
+    font-weight: 400;
+    color: var(--color-header-text);
+    padding: var(--space-2) 0;
+    letter-spacing: 0.02em;
+    position: relative;
+    display: inline-block;
+    transition: color var(--transition-base);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background-color: var(--color-header-hover);
+    transition: width var(--transition-smooth);
+}
+
+.nav-link:hover {
+    color: var(--color-header-hover);
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.nav-link--highlight {
+    color: var(--color-header-highlight);
+}
+
+/* --------------------------------------------------------------------------
+   4.1 ABA HOVER 'EXPLORAR' — LINHAS RECENTES (18_Made In lace Explorar.png)
+   -------------------------------------------------------------------------- */
+.nav-item--has-dropdown {
+    position: static;
+}
+
+.explorar-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #EFD6BB;
+    border-bottom: 1px solid #CCBDA3;
+    box-shadow: 0 14px 28px -6px rgba(74, 46, 27, 0.16);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-8px);
+    transition: opacity var(--transition-base), transform var(--transition-base), visibility var(--transition-base);
+    z-index: 990;
+    padding: 24px 0 28px 0;
+}
+
+/* Exibição suave no hover e foco por teclado (WCAG 2.2 AA) */
+.nav-item--has-dropdown:hover .explorar-dropdown,
+.nav-item--has-dropdown:focus-within .explorar-dropdown,
+.explorar-dropdown.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.explorar-dropdown__container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+}
+
+.explorar-dropdown__grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1rem, 3.2vw, 44px);
+    flex-wrap: nowrap;
+}
+
+/* Cards das 4 Linhas Recentes */
+.explorar-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 242px;
+    height: 290px;
+    padding: 10px 10px 14px 10px;
+    border-radius: 16px;
+    text-decoration: none;
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(45, 29, 19, 0.08);
+}
+
+.explorar-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(74, 46, 27, 0.22);
+}
+
+.explorar-card:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 4px;
+}
+
+/* Alternância de cores fiéis ao design 18_Made In lace Explorar.png */
+.explorar-card--odd {
+    background-color: #BD9579;
+}
+
+.explorar-card--even {
+    background-color: #845130;
+}
+
+.explorar-card__img-box {
+    width: 221px;
+    height: 221px;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.explorar-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--transition-smooth);
+}
+
+.explorar-card:hover .explorar-card__img {
+    transform: scale(1.04);
+}
+
+.explorar-card__title {
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-weight: 500;
+    color: #FDFBF7;
+    text-align: center;
+    letter-spacing: 0.02em;
+    padding-top: 4px;
+    line-height: 1.2;
+}
+
+@media (max-width: 1100px) {
+    .explorar-dropdown__grid {
+        gap: 16px;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 8px;
+        -webkit-overflow-scrolling: touch;
+    }
+    .explorar-card {
+        width: 200px;
+        height: 245px;
+    }
+    .explorar-card__img-box {
+        width: 180px;
+        height: 180px;
+    }
+}
+
+@media (max-width: 768px) {
+    .explorar-dropdown {
+        position: static;
+        width: 100%;
+        transform: none;
+        box-shadow: none;
+        border-bottom: none;
+        padding: 12px 0;
+        display: none;
+    }
+    .nav-item--has-dropdown.is-expanded .explorar-dropdown {
+        display: block;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+}
+
+/* Ações do Header (Ícones) */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 1.5vw, 1.5rem);
+    flex-shrink: 0;
+}
+
+.header-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-1);
+    color: var(--color-header-text);
+    position: relative;
+    border-radius: 50%;
+    transition: color var(--transition-base), transform var(--transition-base);
+}
+
+.header-action-btn:hover {
+    color: var(--color-header-hover);
+    transform: translateY(-1px);
+}
+
+.header-action-btn .icon {
+    display: block;
+    stroke: currentColor;
+}
+
+.header-action-btn--cart {
+    position: relative;
+}
+
+.cart-count-badge {
+    position: absolute;
+    top: -4px;
+    right: -6px;
+    background-color: var(--color-topbar-dot);
+    color: #FFFFFF;
+    font-size: 0.65rem;
+    font-weight: 700;
+    font-family: var(--font-sans);
+    line-height: 1;
+    padding: 2px 5px;
+    border-radius: 9999px;
+    min-width: 16px;
+    text-align: center;
+}
+
+/* Botão Hamburger Mobile (Escondido em telas grandes) */
+.mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 28px;
+    height: 24px;
+    padding: 0;
+}
+
+.mobile-menu-btn__bar {
+    width: 100%;
+    height: 2px;
+    background-color: var(--color-header-text);
+    border-radius: 2px;
+    transition: all var(--transition-base);
+}
+
+/* --------------------------------------------------------------------------
+   4.2 BARRA DE PESQUISA SOBREPOSTA AO HEADER (27_MadeInLace Pesquisa & 9_MadeInLace Pesquisa2)
+   -------------------------------------------------------------------------- */
+.search-drawer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-header-bg);
+    border-bottom: 1px solid var(--color-border-subtle);
+    z-index: 1010;
+    display: flex;
+    align-items: center;
+}
+
+.search-drawer[hidden] {
+    display: none !important;
+}
+
+.search-drawer__form {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.search-drawer__container {
+    max-width: var(--container-max-width);
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    height: 100%;
+}
+
+.search-drawer__field {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.search-drawer__input {
+    width: 100%;
+    height: 48px;
+    border: none;
+    background: transparent;
+    font-family: var(--font-serif);
+    font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+    color: var(--color-header-text);
+    outline: none;
+    padding: 0;
+    letter-spacing: 0.01em;
+}
+
+.search-drawer__input::placeholder {
+    color: rgba(74, 46, 27, 0.45);
+    font-family: var(--font-serif);
+}
+
+.search-drawer__input::-webkit-search-decoration,
+.search-drawer__input::-webkit-search-cancel-button,
+.search-drawer__input::-webkit-search-results-button,
+.search-drawer__input::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+}
+
+.search-drawer__actions {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.search-drawer__submit-btn {
+    background: transparent;
+    border: none;
+    padding: var(--space-1);
+    color: var(--color-header-text);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.search-drawer__submit-btn:hover {
+    transform: scale(1.1);
+    opacity: 0.85;
+}
+
+.search-drawer__icon {
+    width: 24px;
+    height: 24px;
+    display: block;
+    stroke: currentColor;
+}
+
+/* Seletor 'Pesquisar Por: Tudo' com Dropdown */
+.search-mode-selector {
+    position: relative;
+}
+
+.search-mode-btn {
+    height: 38px;
+    padding: 0 clamp(0.75rem, 1.2vw, 1.25rem);
+    background-color: transparent;
+    border: 1px solid var(--color-text-secondary);
+    font-family: var(--font-serif);
+    font-size: clamp(0.9rem, 1.1vw, 1rem);
+    color: var(--color-header-text);
+    cursor: pointer;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.search-mode-btn:hover,
+.search-mode-btn[aria-expanded="true"] {
+    background-color: rgba(237, 201, 175, 0.35);
+}
+
+.search-mode-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #EFD6BB;
+    border: 1px solid var(--color-text-secondary);
+    border-top: none;
+    box-shadow: 0 8px 20px rgba(74, 46, 27, 0.16);
+    display: flex;
+    flex-direction: column;
+    z-index: 1020;
+}
+
+.search-mode-dropdown[hidden] {
+    display: none !important;
+}
+
+.search-mode-item {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(113, 71, 34, 0.2);
+    padding: var(--space-2) var(--space-3);
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    color: var(--color-header-text);
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color var(--transition-fast);
+}
+
+.search-mode-item:last-child {
+    border-bottom: none;
+}
+
+.search-mode-item:hover,
+.search-mode-item.is-selected {
+    background-color: rgba(113, 71, 34, 0.15);
+    font-weight: 500;
+}
+
+.search-drawer__close {
+    display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. SITE MAIN CONTENT WRAPPER
+   -------------------------------------------------------------------------- */
+.site-main {
+    flex-grow: 1;
+    outline: none;
+}
+
+/* --------------------------------------------------------------------------
+   6. SITE FOOTER
+   -------------------------------------------------------------------------- */
+.site-footer {
+    background-color: var(--color-footer-bg);
+    color: var(--color-footer-text);
+    border-top: 1px solid var(--color-footer-border);
+    padding-top: var(--space-12);
+    margin-top: auto;
+}
+
+.footer-container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0 var(--container-padding) var(--space-10);
+    display: grid;
+    grid-template-columns: 1fr 1.1fr 1.3fr;
+    gap: clamp(2rem, 5vw, 4.5rem);
+}
+
+.footer-col__title {
+    font-family: var(--font-serif);
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--color-text-main);
+    margin-bottom: var(--space-4);
+    letter-spacing: 0.02em;
+}
+
+.footer-col__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.footer-col__link {
+    font-family: var(--font-sans);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-main);
+    display: inline-block;
+    padding: 2px 0;
+    transition: color var(--transition-base), transform var(--transition-base);
+}
+
+.footer-col__link:hover {
+    color: var(--color-header-hover);
+    transform: translateX(2px);
+}
+
+/* Formulário de Newsletter / Login 10% */
+.footer-col--newsletter {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-newsletter-form {
+    margin-bottom: var(--space-5);
+}
+
+.footer-newsletter-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border-bottom: 1.5px solid var(--color-footer-input-border);
+    padding-bottom: 4px;
+}
+
+.footer-newsletter-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: var(--space-2) var(--space-8) var(--space-2) 0;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-main);
+    outline: none;
+}
+
+.footer-newsletter-input::placeholder {
+    color: #7A695C;
+    opacity: 0.8;
+}
+
+.footer-newsletter-submit {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-main);
+    transition: transform var(--transition-base), color var(--transition-base);
+}
+
+.footer-newsletter-submit:hover {
+    color: var(--color-header-hover);
+    transform: translateY(-50%) translateX(3px);
+}
+
+.footer-newsletter-arrow {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+/* Redes Sociais no Footer */
+.footer-socials {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.footer-social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform var(--transition-smooth), opacity var(--transition-base);
+    border-radius: 50%;
+}
+
+.footer-social-link:hover {
+    transform: translateY(-3px) scale(1.08);
+}
+
+.footer-social-link svg {
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Linha Inferior de Copyright */
+.footer-bottom {
+    background-color: rgba(0, 0, 0, 0.02);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding: var(--space-4) var(--container-padding);
+}
+
+.footer-bottom__container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    text-align: center;
+}
+
+.footer-bottom__copy {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   7. RESPONSIVIDADE (TABLET & MOBILE)
+   -------------------------------------------------------------------------- */
+@media (max-width: 992px) {
+    .site-nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: min(85vw, 360px);
+        height: 100vh;
+        background-color: var(--color-header-bg);
+        box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+        padding: var(--space-12) var(--space-6) var(--space-8);
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        transition: right var(--transition-smooth);
+        z-index: 1001;
+        overflow-y: auto;
+    }
+
+    .site-nav.is-open {
+        right: 0;
+    }
+
+    .nav-list {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-4);
+        width: 100%;
+    }
+
+    .nav-link {
+        font-size: 1.35rem;
+        display: block;
+        width: 100%;
+    }
+
+    .mobile-menu-btn {
+        display: flex;
+    }
+
+    .mobile-menu-btn.is-active .mobile-menu-btn__bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+    .mobile-menu-btn.is-active .mobile-menu-btn__bar:nth-child(2) {
+        opacity: 0;
+    }
+    .mobile-menu-btn.is-active .mobile-menu-btn__bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .footer-col--newsletter {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 640px) {
+    .top-bar__container {
+        flex-direction: column;
+        gap: 0.35rem;
+        text-align: center;
+    }
+
+    .header-logo__img {
+        height: 38px;
+    }
+
+    .search-drawer__container {
+        gap: var(--space-2);
+        padding: 0 var(--space-3);
+    }
+
+    .search-drawer__input {
+        font-size: 1rem;
+    }
+
+    .search-mode-btn {
+        height: 34px;
+        padding: 0 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .search-drawer__icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: var(--space-8);
+    }
+
+    .footer-col--newsletter {
+        grid-column: span 1;
+    }
+}

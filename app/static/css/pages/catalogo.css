@@ -1,0 +1,691 @@
+/* ==========================================================================
+   MADE IN LACE — CATÁLOGO, LISTAGEM E FILTROS (CSS MODERNO & REFINADO)
+   Fidelidade estrita a docs/design/29_MadeInLace Lista.png, 4_MadeInLace ListaFiltros.png,
+   1_MadeInLace VestidosLista.png e 15_MadeInLace FiltroPesquisa1.png.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. VARIÁVEIS E TOKENS ESPECÍFICOS DO CATÁLOGO
+   -------------------------------------------------------------------------- */
+:root {
+    --catalog-bg: #EEE6D3;                /* Fundo bege suave do design da loja */
+    --catalog-line: #8C6D58;              /* Linhas de borda finas marrom elegante */
+    --catalog-line-subtle: rgba(140, 109, 88, 0.35);
+    --catalog-text: #4A2E1B;              /* Marrom escuro da marca */
+    --catalog-text-muted: #8C7B72;        /* Texto secundário e preços originais */
+    --catalog-tag-bg: #EED9CD;            /* Fundo suave rosado das tags e botões */
+    --catalog-tag-border: #8C6D58;        /* Borda fina das tags de filtros ativos */
+    --catalog-slider-thumb: #5C381E;      /* Marcador circular arrastável */
+    --catalog-font-script: 'Alex Brush', 'Great Vibes', cursive;
+}
+
+/* --------------------------------------------------------------------------
+   2. CONTÊINER E CABEÇALHO DO CATÁLOGO
+   -------------------------------------------------------------------------- */
+.catalog-page {
+    background-color: var(--catalog-bg);
+    min-height: calc(100vh - 180px);
+    padding: var(--space-6) 0 var(--space-16);
+}
+
+.catalog-container {
+    max-width: 1366px;
+    margin: 0 auto;
+    padding: 0 clamp(1rem, 3.5vw, 2.5rem);
+}
+
+/* Título principal cursivo fluído e centralizado */
+.catalog-title-wrapper {
+    text-align: center;
+    margin-bottom: var(--space-6);
+}
+
+.catalog-page-title {
+    font-family: var(--catalog-font-script);
+    font-size: clamp(3rem, 5.5vw, 4.2rem);
+    font-weight: 400;
+    color: var(--catalog-text);
+    line-height: 1.15;
+    margin: 0;
+    letter-spacing: 0.02em;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   3. ESTRUTURA PRINCIPAL (SIDEBAR + GRID)
+   -------------------------------------------------------------------------- */
+.catalog-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: var(--space-6);
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .catalog-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   4. SIDEBAR DE FILTROS (DESIGN FIEL ÀS IMAGENS)
+   -------------------------------------------------------------------------- */
+.catalog-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    position: relative;
+}
+
+/* Caixa Dropdown de Filtros Globais (Best Sellers) */
+.global-filter-box {
+    position: relative;
+    z-index: 40;
+}
+
+.global-filter-trigger {
+    width: 100%;
+    height: 44px;
+    background-color: var(--catalog-bg);
+    border: 1px solid var(--catalog-line);
+    padding: 0 var(--space-4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    color: var(--catalog-text);
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.global-filter-trigger:hover,
+.global-filter-trigger:focus-visible {
+    background-color: rgba(238, 217, 205, 0.4);
+    outline: none;
+    border-color: var(--catalog-text);
+}
+
+.global-filter-trigger__icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 20px;
+    height: 14px;
+}
+
+.global-filter-trigger__icon span {
+    display: block;
+    width: 100%;
+    height: 1.5px;
+    background-color: var(--catalog-text);
+    border-radius: 1px;
+}
+
+/* Dropdown Expandido (4_MadeInLace ListaFiltros.png) */
+.global-filter-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--catalog-bg);
+    border: 1px solid var(--catalog-line);
+    border-top: none;
+    padding: var(--space-3) var(--space-4);
+    flex-direction: column;
+    gap: var(--space-2);
+    box-shadow: 0 8px 24px rgba(74, 46, 27, 0.12);
+    z-index: 50;
+}
+
+.global-filter-dropdown.is-open {
+    display: flex;
+}
+
+.global-filter-dropdown[hidden] {
+    display: none;
+}
+
+.global-filter-option {
+    background: none;
+    border: none;
+    padding: var(--space-1) 0;
+    text-align: left;
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    color: var(--catalog-text);
+    cursor: pointer;
+    transition: color var(--transition-fast), text-decoration var(--transition-fast);
+    line-height: 1.35;
+}
+
+.global-filter-option:hover,
+.global-filter-option:focus-visible {
+    color: var(--catalog-line);
+    text-decoration: underline;
+    outline: none;
+}
+
+/* Regra: O que está ativo fica sublinhado */
+.global-filter-option.is-active {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-weight: 600;
+}
+
+/* Caixa dos Filtros Normais (Laterais) */
+.filters-accordion-panel {
+    border: 1px solid var(--catalog-line);
+    background-color: var(--catalog-bg);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+/* Cabeçalho de cada seção de filtro */
+.filter-section__header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    color: var(--catalog-text);
+    text-align: left;
+}
+
+.filter-section__header:focus-visible {
+    outline: 2px solid var(--catalog-line);
+    outline-offset: 2px;
+}
+
+.filter-section__chevron {
+    transition: transform var(--transition-base);
+}
+
+.filter-section.is-collapsed .filter-section__chevron {
+    transform: rotate(-90deg);
+}
+
+.filter-section.is-collapsed .filter-section__body {
+    display: none;
+}
+
+.filter-section__body {
+    margin-top: var(--space-3);
+}
+
+/* --------------------------------------------------------------------------
+   5. FILTRO DE PREÇO (SLIDER + MEDIDOR ARRASTÁVEL)
+   -------------------------------------------------------------------------- */
+.price-filter {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+/* Trilho do Slider de Preço */
+.price-slider-wrapper {
+    position: relative;
+    height: 24px;
+    display: flex;
+    align-items: center;
+}
+
+.price-slider-track {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: var(--catalog-line);
+}
+
+.price-slider-input {
+    position: absolute;
+    width: 100%;
+    height: 24px;
+    opacity: 0;
+    cursor: pointer;
+    margin: 0;
+    z-index: 5;
+}
+
+/* Círculo medidor visual */
+.price-slider-circle {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background-color: var(--catalog-slider-thumb);
+    border: 2px solid var(--catalog-bg);
+    border-radius: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 3;
+    transition: transform 60ms linear;
+}
+
+/* Ponto inicial fixo em 0 */
+.price-slider-origin {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(0, -50%);
+    width: 10px;
+    height: 10px;
+    background-color: var(--catalog-slider-thumb);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Linha de valores: "RS 0 — RS 380" */
+.price-values-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    color: var(--catalog-text);
+}
+
+.price-value-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.price-input-number {
+    width: 46px;
+    border: none;
+    background: transparent;
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    color: var(--catalog-text);
+    padding: 0;
+    text-align: right;
+}
+
+.price-input-number:focus {
+    outline: 1px solid var(--catalog-line);
+}
+
+/* Remove setinhas nativas dos inputs number */
+.price-input-number::-webkit-outer-spin-button,
+.price-input-number::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.price-input-number[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* --------------------------------------------------------------------------
+   6. FILTROS DE TAMANHO E CATEGORIA (CHECKBOXES QUADRADOS)
+   -------------------------------------------------------------------------- */
+.filter-options-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filter-checkbox-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    color: var(--catalog-text);
+    user-select: none;
+    padding: 2px 0;
+    transition: color var(--transition-fast);
+}
+
+.filter-checkbox-label:hover {
+    color: var(--catalog-line);
+}
+
+.filter-checkbox-label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Quadrado de seleção conforme imagem de design */
+.custom-checkbox-square {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid var(--catalog-line);
+    background-color: transparent;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.filter-checkbox-label input[type="checkbox"]:checked ~ .custom-checkbox-square {
+    background-color: var(--catalog-line);
+}
+
+.filter-checkbox-label input[type="checkbox"]:focus-visible ~ .custom-checkbox-square {
+    outline: 2px solid var(--catalog-text);
+    outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   7. BARRA DE FILTROS ATIVOS HORIZONTAIS (ACIMA DOS PRODUTOS)
+   -------------------------------------------------------------------------- */
+.catalog-main-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.active-filters-bar {
+    min-height: 44px;
+    background-color: var(--catalog-bg);
+    border: 1px solid var(--catalog-line);
+    padding: 6px var(--space-4);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+}
+
+/* Pílula / Tag de filtro ativo com botão de fechar [X] */
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    background-color: var(--catalog-tag-bg);
+    border: 1px solid var(--catalog-tag-border);
+    padding: 3px 8px;
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    color: var(--catalog-text);
+    line-height: 1;
+    border-radius: 1px;
+}
+
+.filter-tag__remove {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--catalog-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: transform var(--transition-fast), color var(--transition-fast);
+}
+
+.filter-tag__remove:hover,
+.filter-tag__remove:focus-visible {
+    color: #000;
+    transform: scale(1.15);
+    outline: none;
+}
+
+.active-filters-empty {
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    color: var(--catalog-text-muted);
+    font-style: italic;
+}
+
+/* --------------------------------------------------------------------------
+   8. GRID DE PRODUTOS (3 COLUNAS, 9 POR VEZ)
+   -------------------------------------------------------------------------- */
+.catalog-products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+}
+
+@media (max-width: 900px) {
+    .catalog-products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-4);
+    }
+}
+
+@media (max-width: 540px) {
+    .catalog-products-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Card Individual de Produto */
+.catalog-product-card {
+    display: flex;
+    flex-direction: column;
+    background: transparent;
+    transition: transform var(--transition-fast);
+}
+
+.catalog-product-card:hover {
+    transform: translateY(-2px);
+}
+
+.catalog-card__media-link {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background-color: #E8DFD3;
+}
+
+.catalog-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 300ms ease;
+}
+
+.catalog-card__media-link:hover .catalog-card__img {
+    transform: scale(1.03);
+}
+
+.catalog-card__content {
+    padding-top: var(--space-2);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.catalog-card__title {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--catalog-text);
+    margin: 0;
+    line-height: 1.25;
+}
+
+.catalog-card__title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.catalog-card__title a:hover {
+    text-decoration: underline;
+}
+
+/* Linha de Preços e Avaliação */
+.catalog-card__info-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-2);
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    margin-top: 2px;
+}
+
+.catalog-card__prices {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-1);
+    white-space: nowrap;
+}
+
+.catalog-card__price-original {
+    font-size: 0.85rem;
+    color: var(--catalog-text-muted);
+    text-decoration: line-through;
+}
+
+.catalog-card__price-current {
+    font-weight: 600;
+    color: var(--catalog-text);
+}
+
+.catalog-card__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.9rem;
+    color: var(--catalog-text);
+    white-space: nowrap;
+}
+
+.catalog-card__star {
+    color: #B88E5E;
+    font-size: 0.95rem;
+}
+
+.catalog-card__rating-count {
+    color: var(--catalog-text);
+    font-size: 0.85rem;
+}
+
+/* Selos / Badges (Promoção e Best Seller) */
+.catalog-card__badges {
+    display: flex;
+    gap: var(--space-1);
+    margin-top: 4px;
+}
+
+.catalog-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: var(--catalog-tag-bg);
+    border: 1px solid var(--catalog-tag-border);
+    font-family: var(--font-serif);
+    font-size: 0.8rem;
+    color: var(--catalog-text);
+    border-radius: 1px;
+    line-height: 1.2;
+}
+
+/* --------------------------------------------------------------------------
+   9. BOTÃO 'CARREGAR MAIS'
+   -------------------------------------------------------------------------- */
+.catalog-load-more-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-8);
+}
+
+.catalog-load-more-btn {
+    min-width: 220px;
+    height: 46px;
+    background-color: var(--catalog-tag-bg);
+    border: 1px solid var(--catalog-tag-border);
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    color: var(--catalog-text);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--space-6);
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.catalog-load-more-btn:hover {
+    background-color: #E2C7B8;
+    transform: translateY(-1px);
+}
+
+.catalog-load-more-btn:focus-visible {
+    outline: 2px solid var(--catalog-text);
+    outline-offset: 2px;
+}
+
+.catalog-load-more-btn[hidden] {
+    display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   10. ESTADO VAZIO (NENHUM PRODUTO ENCONTRADO)
+   -------------------------------------------------------------------------- */
+.catalog-empty-state {
+    display: none;
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: var(--space-16) var(--space-4);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    width: 100%;
+}
+
+.catalog-empty-state.is-visible {
+    display: flex;
+}
+
+.catalog-empty-state[hidden] {
+    display: none;
+}
+
+.catalog-empty-state__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+    color: var(--catalog-text);
+    font-weight: 500;
+    margin: 0;
+}
+
+.catalog-empty-state__desc {
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    color: var(--catalog-text-muted);
+    max-width: 480px;
+    margin: 0;
+}
+
+.catalog-empty-state__btn {
+    margin-top: var(--space-2);
+    height: 40px;
+    padding: 0 var(--space-5);
+    background-color: var(--catalog-tag-bg);
+    border: 1px solid var(--catalog-tag-border);
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    color: var(--catalog-text);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: background-color var(--transition-fast);
+}
+
+.catalog-empty-state__btn:hover {
+    background-color: #E2C7B8;
+}
+
+

@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block title %}Fazer Login — Made In Lace{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/pages/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-page" aria-labelledby="login-title">
+    <div class="auth-container">
+        <!-- Título Principal fiel a 13_MadeInLace Login.png -->
+        <h1 id="login-title" class="auth-heading">Fazer Login</h1>
+
+        <!-- Alerta promocional de 10% Off se ativado via footer/parâmetro -->
+        {% if promo_ativa %}
+        <div class="auth-promo-alert" role="status" style="background-color: #E2D3BE; border: 1px solid #512E11; color: #512E11; padding: 0.75rem; border-radius: 2px; margin-bottom: 1.5rem; font-family: var(--font-serif); font-size: 1.05rem; text-align: center;">
+            <span>10% Off Ativado Caso Seja Sua Primeira Compra! Conclua O Login E Aproveite</span>
+        </div>
+        {% endif %}
+
+        <!-- Mensagem de boas-vindas caso o usuário tenha acabado de se cadastrar -->
+        {% if registered %}
+        <div style="background-color: #E2D3BE; border: 1px solid #512E11; color: #512E11; padding: 0.75rem; border-radius: 2px; margin-bottom: 1.5rem; font-family: var(--font-serif); font-size: 1.05rem;" role="status">
+            Cadastro concluído com sucesso! Faça login com seu e-mail e senha.
+        </div>
+        {% endif %}
+
+        <!-- Formulário de Login -->
+        <form id="login-form" action="/login{% if next_url and next_url != '/' %}?next={{ next_url|urlencode }}{% endif %}" method="post" novalidate>
+            <!-- Preserva o destino de retorno pós-login (ex: /carrinho ou página de origem) -->
+            <input type="hidden" name="next_url" id="login-next-url" value="{{ next_url or '/' }}">
+            <!-- Campo de Email (ao contrário do design original que continha CPF, exigência estrita do projeto: login feito com email) -->
+            <div class="auth-group">
+                <label for="login-email" class="auth-label">Email:</label>
+                <input 
+                    type="text" 
+                    id="login-email" 
+                    name="email" 
+                    class="auth-input" 
+                    value="{{ email_preenchido or '' }}" 
+                    placeholder="seu-email@exemplo.com" 
+                    autocomplete="username" 
+                    required
+                >
+            </div>
+
+            <!-- Campo de Senha -->
+            <div class="auth-group">
+                <label for="login-password" class="auth-label">Senha:</label>
+                <input 
+                    type="password" 
+                    id="login-password" 
+                    name="password" 
+                    class="auth-input" 
+                    placeholder="Sua senha secreta" 
+                    autocomplete="current-password" 
+                    required
+                >
+                <!-- Mensagem de erro requerida: "email ou senha estão errados" -->
+                <p 
+                    class="auth-error-message {% if error_login %}is-visible{% endif %}" 
+                    id="login-error-message" 
+                    role="alert"
+                >
+                    email ou senha estão errados
+                </p>
+            </div>
+
+            <!-- Botão de submissão do login -->
+            <div style="margin-top: 1.5rem;">
+                <button type="submit" class="auth-btn-primary" style="width: 100%;">Entrar</button>
+            </div>
+
+            <!-- Links de Ação: Criar Conta e Problemas para Login -->
+            <div class="auth-actions">
+                <a href="/registro" class="auth-link">Criar Uma conta</a>
+                <button 
+                    type="button" 
+                    class="auth-link" 
+                    data-modal-open="modal-recuperacao"
+                    aria-haspopup="dialog"
+                    aria-controls="modal-recuperacao"
+                >
+                    Problemas Para Fazer Login?
+                </button>
+            </div>
+
+            <!-- Nota legal de aceite -->
+            <p class="auth-legal-note">
+                Ao continuar, você concorda com nossa Política de Privacidade e Cookies e Termos e condições.
+            </p>
+        </form>
+    </div>
+</section>
+
+<!-- =======================================================================
+     MODAL 1: RECUPERAR CONTA (19_MadeInLace Recuperacao.png)
+     ======================================================================= -->
+<div 
+    class="auth-modal" 
+    id="modal-recuperacao" 
+    role="dialog" 
+    aria-modal="true" 
+    aria-labelledby="recuperacao-title" 
+    aria-hidden="true"
+>
+    <div class="auth-modal__card">
+        <button type="button" class="auth-modal__close" data-modal-close aria-label="Fechar janela de recuperação">&times;</button>
+        <h2 id="recuperacao-title" class="auth-modal__title">Recuperar Conta</h2>
+
+        <div class="recovery-row">
+            <label for="recovery-email" class="visually-hidden">Email</label>
+            <input 
+                type="email" 
+                id="recovery-email" 
+                class="modal-input-dark" 
+                placeholder="Email: seu-email@exemplo.com"
+                autocomplete="email"
+            >
+            <button type="button" id="btn-send-recovery-code" class="modal-btn-dark">Enviar</button>
+        </div>
+
+        <div class="recovery-row">
+            <label for="recovery-code" class="visually-hidden">Código Enviado</label>
+            <input 
+                type="text" 
+                id="recovery-code" 
+                class="modal-input-dark" 
+                placeholder="Código Enviado:"
+                autocomplete="one-time-code"
+            >
+            <div class="modal-timer-box" id="recovery-timer-display" aria-label="Tempo restante para validação">0:00</div>
+        </div>
+
+        <button type="button" id="btn-verify-recovery-code" class="modal-btn-light" style="width: 100%; margin-top: 0.75rem;">
+            Verificar Código
+        </button>
+
+        <div class="recovery-footer-link">
+            <a href="#" id="link-forgot-email" class="auth-link" style="color: #4A2E19;">
+                Esqueceu o email? Clique aqui!
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- =======================================================================
+     MODAL 2: MUDAR SENHA (24_MadeInLace Recuperacao2.png)
+     ======================================================================= -->
+<div 
+    class="auth-modal" 
+    id="modal-mudar-senha" 
+    role="dialog" 
+    aria-modal="true" 
+    aria-labelledby="mudar-senha-title" 
+    aria-hidden="true"
+>
+    <div class="auth-modal__card">
+        <button type="button" class="auth-modal__close" data-modal-close aria-label="Fechar janela">&times;</button>
+        <h2 id="mudar-senha-title" class="auth-modal__title">Mudar Senha</h2>
+
+        <div class="password-change-form">
+            <div>
+                <label for="new-password" class="visually-hidden">Senha Nova</label>
+                <input 
+                    type="password" 
+                    id="new-password" 
+                    class="modal-input-dark" 
+                    placeholder="Senha Nova:" 
+                    autocomplete="new-password"
+                >
+            </div>
+            <div>
+                <label for="confirm-password" class="visually-hidden">Confirmar Senha</label>
+                <input 
+                    type="password" 
+                    id="confirm-password" 
+                    class="modal-input-dark" 
+                    placeholder="Confirmar Senha:" 
+                    autocomplete="new-password"
+                >
+            </div>
+            <button type="button" id="btn-save-new-password" class="modal-btn-light" style="width: 100%; margin-top: 0.5rem;">
+                Continuar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- =======================================================================
+     MODAL 3: RECUPERAR CONTA POR CPF E DATA (30_MadeInLace Recuperacao1.1.png)
+     ======================================================================= -->
+<div 
+    class="auth-modal" 
+    id="modal-recuperacao-cpf" 
+    role="dialog" 
+    aria-modal="true" 
+    aria-labelledby="recuperacao-cpf-title" 
+    aria-hidden="true"
+>
+    <div class="auth-modal__card">
+        <button type="button" class="auth-modal__close" data-modal-close aria-label="Fechar janela">&times;</button>
+        <h2 id="recuperacao-cpf-title" class="auth-modal__title">Recuperar Conta</h2>
+
+        <div class="recovery-search-grid" style="margin-bottom: 1rem;">
+            <div>
+                <label for="recuperacao-cpf" class="visually-hidden">CPF</label>
+                <input 
+                    type="text" 
+                    id="recuperacao-cpf" 
+                    class="modal-input-dark" 
+                    placeholder="CPF: 000.000.000-00" 
+                    maxlength="14"
+                >
+            </div>
+            <button type="button" id="btn-search-cpf" class="modal-btn-light">Procurar</button>
+        </div>
+
+        <div class="recovery-search-grid" style="margin-bottom: 1rem;">
+            <div>
+                <label for="recuperacao-nasc" class="visually-hidden">Data Nascimento</label>
+                <input 
+                    type="text" 
+                    id="recuperacao-nasc" 
+                    class="modal-input-dark" 
+                    placeholder="Data Nascimento: DD/MM/AAAA" 
+                    maxlength="10"
+                >
+            </div>
+            <div>
+                <label for="recuperacao-senha-cpf" class="visually-hidden">Senha</label>
+                <input 
+                    type="password" 
+                    id="recuperacao-senha-cpf" 
+                    class="modal-input-dark" 
+                    placeholder="Senha:" 
+                    autocomplete="current-password"
+                >
+            </div>
+        </div>
+
+        <div class="recovery-search-grid">
+            <div id="masked-email-display" class="masked-email-display" aria-label="E-mail localizado parcialmente oculto" aria-live="polite"></div>
+            <button type="button" id="btn-continue-cpf-recovery" class="modal-btn-light">Continuar</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="module" src="{{ url_for('static', path='js/modules/auth.js') }}"></script>
+{% endblock %}

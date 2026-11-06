@@ -1,0 +1,625 @@
+/* ==========================================================================
+   MADE IN LACE — AUTH & REGISTRATION PAGES CSS
+   Baseado estritamente nas referências:
+   - 13_MadeInLace Login.png
+   - 3_MadeInLace Registro1.png
+   - 19_MadeInLace Recuperacao.png
+   - 24_MadeInLace Recuperacao2.png
+   - 30_MadeInLace Recuperacao1.1.png
+   - 31_MadeInLace Registro2.png
+   - MadeInLace_Autenticar_Email.png
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CONTAINER E ESTRUTURA GERAL DAS PÁGINAS DE AUTH
+   -------------------------------------------------------------------------- */
+.auth-page {
+    background-color: var(--color-header-bg, #EEE6D3);
+    min-height: calc(100vh - 380px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--space-10, 2.5rem) var(--space-4, 1rem) var(--space-16, 4rem);
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 460px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.auth-container--wide {
+    max-width: 820px;
+}
+
+/* --------------------------------------------------------------------------
+   2. TÍTULOS E TIPOGRAFIA
+   -------------------------------------------------------------------------- */
+.auth-heading {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 3.5vw, 2.75rem);
+    font-weight: 400;
+    color: #4A2E19;
+    margin-bottom: var(--space-8, 2rem);
+    letter-spacing: 0.015em;
+    text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   3. CAMPOS DE ENTRADA (INPUTS)
+   -------------------------------------------------------------------------- */
+.auth-group {
+    margin-bottom: var(--space-4, 1rem);
+    text-align: left;
+}
+
+.auth-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #4A2E19;
+    margin-bottom: 0.35rem;
+}
+
+.auth-input {
+    width: 100%;
+    height: 48px;
+    padding: 0 1rem;
+    background-color: #EAE1D0;
+    border: 1.5px solid var(--color-text-main);
+    border-radius: 1px;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    color: var(--color-text-main);
+    transition: border-color var(--transition-fast, 150ms ease), box-shadow var(--transition-fast, 150ms ease), background-color var(--transition-fast, 150ms ease);
+}
+
+.auth-input::placeholder {
+    color: #8C7B72;
+    opacity: 0.7;
+}
+
+.auth-input:hover {
+    border-color: #512E11;
+    background-color: #F1E9DA;
+}
+
+.auth-input:focus-visible {
+    outline: none;
+    border-color: #512E11;
+    background-color: #F9F5EE;
+    box-shadow: 0 0 0 2px rgba(81, 46, 17, 0.3);
+}
+
+.auth-input--error {
+    border-color: #A32828 !important;
+    background-color: #FDF2F2 !important;
+}
+
+/* Mensagens de feedback de erro */
+.auth-error-message {
+    display: none;
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    color: #8B2020;
+    margin-top: 0.5rem;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.auth-error-message.is-visible {
+    display: block;
+}
+
+.auth-field-error {
+    display: none;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    color: #8B2020;
+    margin-top: 0.25rem;
+}
+
+.auth-field-error.is-visible {
+    display: block;
+}
+
+/* --------------------------------------------------------------------------
+   4. LINKS DE AÇÃO (Criar conta, Problemas para login)
+   -------------------------------------------------------------------------- */
+.auth-actions {
+    margin-top: var(--space-6, 1.5rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.auth-link {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    color: #4A2E19;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    transition: color var(--transition-fast, 150ms ease);
+}
+
+.auth-link:hover {
+    color: var(--color-text-main);
+}
+
+.auth-link:focus-visible {
+    outline: 2px solid var(--color-focus-ring, #8C532E);
+    border-radius: 2px;
+}
+
+/* Texto de concordância legal */
+.auth-legal-note {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    color: #5F422E;
+    margin-top: var(--space-8, 2rem);
+    line-height: 1.45;
+    text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   5. GRID DA PÁGINA DE REGISTRO (3_MadeInLace Registro1)
+   -------------------------------------------------------------------------- */
+.register-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem 2rem;
+    text-align: left;
+    margin-bottom: var(--space-6, 1.5rem);
+}
+
+.register-grid__full {
+    grid-column: 1 / -1;
+    max-width: 440px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+@media (max-width: 680px) {
+    .register-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .register-grid__full {
+        max-width: 100%;
+    }
+}
+
+/* Ícone de status da validação de senha (Check / X) */
+.password-indicator-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.password-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+    color: #FFFFFF;
+    transition: all var(--transition-fast, 150ms ease);
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.password-badge.is-visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.password-badge--valid {
+    background-color: #2E7D32; /* Verde aprovado */
+}
+
+.password-badge--invalid {
+    background-color: #C62828; /* Vermelho erro */
+}
+
+.password-requirements-hint {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    color: #6A4D38;
+    margin-top: 0.4rem;
+    line-height: 1.35;
+}
+
+/* Botões marrons do design */
+.auth-btn-primary {
+    display: inline-block;
+    background-color: #512E11;
+    color: #F6EFE5;
+    border: 1px solid #3E2108;
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    padding: 0.75rem 2.5rem;
+    border-radius: 1px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(45, 29, 19, 0.15);
+    transition: background-color var(--transition-fast, 150ms ease), transform var(--transition-fast, 150ms ease);
+}
+
+.auth-btn-primary:hover {
+    background-color: #381C08;
+    transform: translateY(-1px);
+}
+
+.auth-btn-primary:active {
+    transform: translateY(0);
+}
+
+.auth-btn-primary:focus-visible {
+    outline: 2px solid #512E11;
+    outline-offset: 3px;
+}
+
+.register-actions {
+    margin-top: var(--space-6, 1.5rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4, 1rem);
+}
+
+.address-summary-badge {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: #512E11;
+    background-color: #E2D3BE;
+    padding: 0.4rem 0.85rem;
+    border-radius: 20px;
+    border: 1px solid #CDBCA5;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   6. MODAIS E OVERLAYS (Recuperação 1, 2, 1.1, Registro2, Autenticar Email)
+   -------------------------------------------------------------------------- */
+.auth-modal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(95, 87, 80, 0.65);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4, 1rem);
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-base, 250ms ease);
+}
+
+.auth-modal.is-active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.auth-modal__card {
+    background-color: #ECCBB5;
+    border: 1.5px solid #512E11;
+    padding: 2.25rem 2.5rem;
+    width: 100%;
+    max-width: 620px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(45, 29, 19, 0.25);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.auth-modal__close {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    color: #4A2E19;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    line-height: 1;
+    padding: 0.25rem 0.5rem;
+}
+
+.auth-modal__close:hover {
+    color: var(--color-text-main);
+}
+
+.auth-modal__close:focus-visible {
+    outline: 2px solid #512E11;
+}
+
+.auth-modal__title {
+    font-family: var(--font-serif);
+    font-size: 1.75rem;
+    color: #4A2E19;
+    font-weight: 400;
+    text-align: center;
+    margin-bottom: 1.75rem;
+}
+
+/* Inputs e Botões dentro dos Modais */
+.modal-input-dark {
+    width: 100%;
+    height: 46px;
+    background-color: #512E11;
+    color: #F6EFE5;
+    border: 1px solid #3E2108;
+    padding: 0 1rem;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    border-radius: 1px;
+}
+
+.modal-input-dark::placeholder {
+    color: #CDBCA5;
+    opacity: 0.8;
+}
+
+.modal-input-dark:focus-visible {
+    outline: none;
+    border-color: #ECCBB5;
+    box-shadow: 0 0 0 2px rgba(236, 203, 181, 0.5);
+}
+
+.modal-btn-dark {
+    height: 46px;
+    background-color: #512E11;
+    color: #F6EFE5;
+    border: 1px solid #3E2108;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    padding: 0 1.5rem;
+    cursor: pointer;
+    white-space: nowrap;
+    border-radius: 1px;
+    transition: background-color var(--transition-fast, 150ms ease);
+}
+
+.modal-btn-dark:hover {
+    background-color: #381C08;
+}
+
+.modal-btn-dark:focus-visible {
+    outline: 2px solid #ECCBB5;
+}
+
+.modal-btn-light {
+    height: 46px;
+    background-color: #ECCBB5;
+    color: #4A2E19;
+    border: 1.5px solid #512E11;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    padding: 0 1.75rem;
+    cursor: pointer;
+    white-space: nowrap;
+    border-radius: 1px;
+    transition: background-color var(--transition-fast, 150ms ease);
+}
+
+.modal-btn-light:hover {
+    background-color: #E2BC9F;
+}
+
+.modal-btn-light:focus-visible {
+    outline: 2px solid #512E11;
+}
+
+/* Timer box */
+.modal-timer-box {
+    height: 46px;
+    min-width: 90px;
+    background-color: #512E11;
+    color: #F6EFE5;
+    border: 1px solid #3E2108;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    padding: 0 1rem;
+    border-radius: 1px;
+}
+
+/* Modal Recuperação 1: 19_MadeInLace Recuperacao */
+.recovery-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    align-items: center;
+}
+
+.recovery-footer-link {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+/* Modal Recuperação 2: 24_MadeInLace Recuperacao2 */
+.password-change-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.password-change-form .auth-label {
+    color: #4A2E19;
+}
+
+/* Modal Recuperação 1.1: 30_MadeInLace Recuperacao1.1 */
+.recovery-search-grid {
+    display: grid;
+    grid-template-columns: 1fr 140px;
+    gap: 1.25rem;
+    align-items: center;
+}
+
+.masked-email-display {
+    height: 46px;
+    background-color: #ECCBB5;
+    border: 1.5px solid #512E11;
+    color: var(--color-text-main);
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    border-radius: 1px;
+}
+
+/* Modal Adicionar Endereço: 31_MadeInLace Registro2 */
+.address-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.address-item-box {
+    background-color: #512E11;
+    border: 1px solid #3E2108;
+    padding: 1.25rem;
+    border-radius: 2px;
+}
+
+.address-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.address-radio-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: #ECCBB5;
+    font-family: var(--font-serif);
+    font-size: 1rem;
+}
+
+.address-radio-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid #ECCBB5;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color var(--transition-fast, 150ms ease);
+}
+
+.address-radio-circle::after {
+    content: '';
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: background-color var(--transition-fast, 150ms ease);
+}
+
+.address-radio-input:checked + .address-radio-circle::after {
+    background-color: #ECCBB5;
+}
+
+.address-fields-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.address-fields-grid--full {
+    grid-column: 1 / -1;
+}
+
+.address-fields-grid input {
+    height: 38px;
+    background-color: #ECCBB5;
+    border: 1px solid #3E2108;
+    color: var(--color-text-main);
+    padding: 0 0.75rem;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    width: 100%;
+}
+
+.address-fields-grid input::placeholder {
+    color: #63432B;
+    opacity: 0.8;
+}
+
+.btn-add-address-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    background-color: #ECCBB5;
+    border: 1.5px solid #512E11;
+    font-family: var(--font-serif);
+    font-size: 1.75rem;
+    color: #4A2E19;
+    cursor: pointer;
+    border-radius: 1px;
+    margin: 0 auto;
+    transition: background-color var(--transition-fast, 150ms ease);
+}
+
+.btn-add-address-box:hover {
+    background-color: #E2BC9F;
+}
+
+.btn-add-address-box:focus-visible {
+    outline: 2px solid #512E11;
+}
+
+/* Modal Autenticar Email: MadeInLace_Autenticar_Email */
+.email-auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.email-auth-header-action {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+/* Responsividade adicional */
+@media (max-width: 540px) {
+    .auth-modal__card {
+        padding: 1.5rem 1rem;
+    }
+    .recovery-search-grid {
+        grid-template-columns: 1fr;
+    }
+    .recovery-row {
+        grid-template-columns: 1fr;
+    }
+    .address-fields-grid {
+        grid-template-columns: 1fr;
+    }
+}

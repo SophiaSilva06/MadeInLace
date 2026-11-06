@@ -1,0 +1,522 @@
+/* ==========================================================================
+   MADE IN LACE — CARRINHO LATERAL (DRAWER) CSS
+   Fidelidade visual estrita a docs/design/17_MadeInLace Carrinho.png
+   e docs/design/22_MadeInLace Carrinho2.png
+   WCAG 2.2 AA — Responsivo, sem overflow horizontal, microinterações fluidas.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. ESTRUTURA PRINCIPAL DO DRAWER
+   -------------------------------------------------------------------------- */
+.cart-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    height: 100vh;
+    height: 100dvh;
+    width: 100%;
+    max-width: 33.333vw; /* Não deve ocupar mais do que 1/3 da largura da tela */
+    background-color: var(--color-topbar-bg, #EDC9AF);
+    box-shadow: -6px 0 28px rgba(74, 46, 27, 0.22);
+    display: flex;
+    flex-direction: column;
+    z-index: 1050;
+    transform: translateX(100%);
+    transition: transform 320ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-sizing: border-box;
+}
+
+/* Estado Aberto */
+.cart-drawer.is-open {
+    transform: translateX(0);
+}
+
+/* Responsividade mobile (ajuste seguro mantendo legibilidade) */
+@media (max-width: 900px) {
+    .cart-drawer {
+        max-width: 440px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cart-drawer {
+        max-width: 100vw;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   2. CABEÇALHO ESTÁTICO (TOPO)
+   -------------------------------------------------------------------------- */
+.cart-drawer__header {
+    flex-shrink: 0;
+    padding: var(--space-5, 20px) var(--space-5, 20px) var(--space-3, 12px);
+    background-color: var(--color-topbar-bg, #EDC9AF);
+    border-bottom: 1px solid rgba(74, 46, 27, 0.12);
+}
+
+.cart-drawer__header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-3, 12px);
+}
+
+.cart-drawer__title-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2, 8px);
+}
+
+.cart-drawer__title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.4rem, 2vw, 1.75rem);
+    font-weight: 600;
+    color: var(--color-text-main, #4A2E1B);
+    line-height: 1.15;
+    margin: 0;
+}
+
+/* Badge do Contador de Itens ao lado do título [ 2 ] */
+.cart-drawer__count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3C2B22;
+    color: #FFFFFF;
+    font-family: var(--font-sans);
+    font-size: 0.875rem; /* 14px */
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 3px;
+    min-width: 24px;
+    height: 24px;
+    line-height: 1;
+}
+
+/* Botão 'X' no Canto Superior Direito */
+.cart-drawer__close-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.85rem;
+    line-height: 1;
+    color: var(--color-text-main, #4A2E1B);
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: transform var(--transition-fast, 150ms ease), opacity var(--transition-fast, 150ms ease);
+}
+
+.cart-drawer__close-btn:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
+}
+
+.cart-drawer__close-btn:focus-visible {
+    outline: 2px solid var(--color-focus-ring, #8C532E);
+    outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   3. MEDIDOR DINÂMICO DE FRETE GRÁTIS
+   -------------------------------------------------------------------------- */
+.cart-drawer__shipping-box {
+    margin-top: 4px;
+}
+
+.cart-drawer__shipping-message {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--color-text-main, #4A2E1B);
+    margin-bottom: 6px;
+    transition: color 250ms ease;
+}
+
+/* Barra do Medidor */
+.cart-drawer__shipping-meter {
+    width: 100%;
+    height: 14px;
+    background-color: #5C3D2E;
+    border-radius: 7px;
+    overflow: hidden;
+    padding: 2px;
+    box-sizing: border-box;
+}
+
+.cart-drawer__shipping-fill {
+    height: 100%;
+    border-radius: 5px;
+    background-color: #A87B5B;
+    transition: width 350ms cubic-bezier(0.4, 0, 0.2, 1), background-color 300ms ease;
+    min-width: 0;
+}
+
+/* Quando completo: Verde Oliva idêntico a docs/design/22_MadeInLace Carrinho2.png */
+.cart-drawer__shipping-meter.is-complete .cart-drawer__shipping-fill {
+    background-color: #85A852;
+}
+
+.cart-drawer__shipping-message.is-complete {
+    color: #385E1A;
+    font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   4. CORPO ROLÁVEL COM ITENS
+   -------------------------------------------------------------------------- */
+.cart-drawer__body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: var(--space-4, 16px);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(74, 46, 27, 0.4) transparent;
+}
+
+.cart-drawer__body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cart-drawer__body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.cart-drawer__body::-webkit-scrollbar-thumb {
+    background: rgba(74, 46, 27, 0.4);
+    border-radius: 3px;
+}
+
+/* Estado Vazio */
+.cart-drawer__empty {
+    text-align: center;
+    padding: var(--space-8, 32px) var(--space-4, 16px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 240px;
+}
+
+.cart-drawer__empty-icon {
+    color: var(--color-text-secondary, #714722);
+    margin-bottom: var(--space-3, 12px);
+    opacity: 0.8;
+}
+
+.cart-drawer__empty-title {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-main, #4A2E1B);
+    margin-bottom: var(--space-2, 8px);
+}
+
+.cart-drawer__empty-subtext {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary, #714722);
+    margin-bottom: var(--space-5, 20px);
+    line-height: 1.4;
+    max-width: 280px;
+}
+
+.cart-drawer__empty-btn {
+    display: inline-block;
+    background-color: #8C6246;
+    color: #FFFFFF;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: background-color var(--transition-fast, 150ms ease);
+}
+
+.cart-drawer__empty-btn:hover {
+    background-color: #744E35;
+}
+
+/* Lista de Produtos */
+.cart-drawer__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3, 12px);
+}
+
+/* Card Individual de Produto no Carrinho */
+.cart-item {
+    background-color: #DFC1B0;
+    border-radius: 4px;
+    padding: 10px 12px;
+    position: relative;
+    display: flex;
+    gap: var(--space-3, 12px);
+    box-shadow: 0 1px 3px rgba(74, 46, 27, 0.08);
+    transition: transform var(--transition-fast, 150ms ease), opacity var(--transition-fast, 150ms ease);
+}
+
+/* Botão 'X' no Canto Superior Direito do Card para Remover Produto e Todas Quantidades */
+.cart-item__remove-btn {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.25rem;
+    line-height: 1;
+    color: var(--color-text-main, #4A2E1B);
+    padding: 2px 4px;
+    border-radius: 3px;
+    opacity: 0.75;
+    transition: opacity var(--transition-fast, 150ms ease), transform var(--transition-fast, 150ms ease);
+}
+
+.cart-item__remove-btn:hover {
+    opacity: 1;
+    transform: scale(1.15);
+}
+
+.cart-item__remove-btn:focus-visible {
+    outline: 2px solid var(--color-focus-ring, #8C532E);
+    opacity: 1;
+}
+
+/* Miniatura do Produto */
+.cart-item__thumb {
+    width: 68px;
+    height: 68px;
+    border-radius: 3px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background-color: #EDE3DC;
+}
+
+/* Conteúdo Informativo */
+.cart-item__content {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-right: 18px; /* Espaço para o botão 'x' */
+}
+
+.cart-item__title {
+    font-family: var(--font-serif);
+    font-size: 0.975rem;
+    font-weight: 600;
+    color: var(--color-text-main, #4A2E1B);
+    line-height: 1.25;
+    margin: 0 0 2px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cart-item__variation {
+    font-size: 0.775rem;
+    color: var(--color-text-secondary, #714722);
+    margin: 0 0 8px 0;
+    line-height: 1.2;
+}
+
+/* Linha de Controles Inferiores (Quantidade + Preço + Timer) */
+.cart-item__actions-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
+}
+
+/* Seletor Segmentado de Quantidade [- | 2 | +] */
+.cart-item__qty-box {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #4A2E1B;
+    background: transparent;
+    height: 26px;
+    box-sizing: border-box;
+    border-radius: 2px;
+}
+
+.cart-item__qty-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 22px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4A2E1B;
+    padding: 0;
+    transition: background-color var(--transition-fast, 150ms ease);
+}
+
+.cart-item__qty-btn:hover:not(:disabled) {
+    background-color: rgba(74, 46, 27, 0.12);
+}
+
+.cart-item__qty-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.cart-item__qty-val {
+    min-width: 22px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-sans);
+    font-size: 0.825rem;
+    font-weight: 500;
+    color: #4A2E1B;
+    border-left: 1px solid #4A2E1B;
+    border-right: 1px solid #4A2E1B;
+    padding: 0 4px;
+}
+
+/* Badge Escuro de Preço com Decimais (ex: R$ 180,00) */
+.cart-item__price-badge {
+    background-color: #3C2B22;
+    color: #FFFFFF;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 600;
+    height: 26px;
+    padding: 0 7px;
+    border-radius: 2px;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+/* Badge Escuro do Timer de Reserva (ex: 5:22:14) */
+.cart-item__timer-badge {
+    background-color: #3C2B22;
+    color: #FFFFFF;
+    font-family: 'Courier New', Courier, monospace, var(--font-sans);
+    font-size: 0.825rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    height: 26px;
+    padding: 0 7px;
+    border-radius: 2px;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.cart-item__timer-badge.is-expired {
+    background-color: #7A3326;
+    color: #FFEAE6;
+}
+
+/* --------------------------------------------------------------------------
+   5. RODAPÉ ESTÁTICO (FUNDO)
+   -------------------------------------------------------------------------- */
+.cart-drawer__footer {
+    flex-shrink: 0;
+    padding: var(--space-4, 16px) var(--space-5, 20px) var(--space-5, 20px);
+    background-color: var(--color-topbar-bg, #EDC9AF);
+    border-top: 1px solid rgba(74, 46, 27, 0.12);
+}
+
+/* Barra de Total com Fundo Escuro */
+.cart-drawer__total-bar {
+    background-color: #3C2B22;
+    color: #FFFFFF;
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 3px;
+    margin-bottom: var(--space-3, 12px);
+}
+
+.cart-drawer__total-label {
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.cart-drawer__total-val {
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+/* Alerta de Validação: Adicione Produtos Para Ir Ao Pagamento */
+.cart-drawer__alert {
+    background-color: #5C2317;
+    color: #FFFFFF;
+    border: 1px solid #7D3728;
+    border-radius: 3px;
+    padding: 10px 14px;
+    margin-bottom: var(--space-3, 12px);
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(74, 46, 27, 0.25);
+    animation: cart-alert-shake 400ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.cart-drawer__alert[hidden],
+[hidden] {
+    display: none !important;
+}
+
+.cart-drawer__alert svg {
+    flex-shrink: 0;
+}
+
+@keyframes cart-alert-shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+    40%, 60% { transform: translate3d(3px, 0, 0); }
+}
+
+/* Botão 'IR PARA O PAGAMENTO' */
+.cart-drawer__checkout-btn {
+    display: block;
+    width: 100%;
+    background-color: #8C6246;
+    color: #FFFFFF;
+    font-family: var(--font-sans);
+    font-size: 0.975rem;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    padding: 14px 18px;
+    border-radius: 3px;
+    border: none;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background-color var(--transition-fast, 150ms ease), transform var(--transition-fast, 150ms ease);
+}
+
+.cart-drawer__checkout-btn:hover {
+    background-color: #744E35;
+}
+
+.cart-drawer__checkout-btn:focus-visible {
+    outline: 2px solid var(--color-focus-ring, #8C532E);
+    outline-offset: 2px;
+}

@@ -496,6 +496,18 @@ Anexo A. [Tabela de frete](#anexo-a--tabela-de-frete)
 | DATA_EXPIRA | `DATETIME` | Não | |
 | EXPIRADO | `TINYINT(1)` | Não | Padrão 0. 1 quando usado ou invalidado |
 
+**VERIFICACAO_EMAIL**
+
+| Coluna | Tipo | Nulo | Observação |
+|---|---|---|---|
+| ID | `INT UNSIGNED` | Não | PK, auto incremento |
+| EMAIL | `VARCHAR(254)` | Não | E-mail destinatário da verificação |
+| TOKEN | `CHAR(64)` | Não | Único. Hash SHA-256 do código de verificação |
+| DATA_CRIACAO | `DATETIME` | Não | Padrão: data/hora atual |
+| DATA_EXPIRA | `DATETIME` | Não | Data/hora de expiração do código |
+| EXPIRADO | `TINYINT(1)` | Não | Padrão 0. 1 quando verificado ou expirado |
+| TENTATIVAS | `TINYINT UNSIGNED` | Não | Padrão 0. Tentativas de validação |
+
 #### Carrinho
 
 **CARRINHO**

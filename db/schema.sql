@@ -231,6 +231,21 @@ CREATE TABLE RECUPERACAO (
     CONSTRAINT CK_RECUPERACAO_DATAS CHECK (DATA_EXPIRA > DATA_CRIACAO)
 ) ENGINE=InnoDB;
 
+-- TOKEN guarda o HASH (SHA-256 em hex = 64 chars) do código/token de verificação enviado por e-mail no cadastro.
+CREATE TABLE VERIFICACAO_EMAIL (
+    ID            INT UNSIGNED     NOT NULL AUTO_INCREMENT,
+    EMAIL         VARCHAR(254)     NOT NULL,
+    TOKEN         CHAR(64)         NOT NULL,
+    DATA_CRIACAO  DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    DATA_EXPIRA   DATETIME         NOT NULL,
+    EXPIRADO      TINYINT(1)       NOT NULL DEFAULT 0,
+    TENTATIVAS    TINYINT UNSIGNED NOT NULL DEFAULT 0,
+    PRIMARY KEY (ID),
+    UNIQUE KEY UQ_VERIFICACAO_EMAIL_TOKEN (TOKEN),
+    KEY IDX_VERIFICACAO_EMAIL_BUSCA (EMAIL, EXPIRADO, DATA_EXPIRA),
+    CONSTRAINT CK_VERIFICACAO_EMAIL_DATAS CHECK (DATA_EXPIRA > DATA_CRIACAO)
+) ENGINE=InnoDB;
+
 -- =====================================================================
 --  5. CARRINHO
 -- =====================================================================

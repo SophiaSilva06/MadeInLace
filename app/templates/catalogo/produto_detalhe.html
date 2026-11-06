@@ -1,0 +1,414 @@
+{% extends "base.html" %}
+
+{% block title %}{{ produto.nome }} — Made In Lace{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/pages/produto_detalhe.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="produto-pagina" id="main-content">
+    <div class="section-container">
+        <!-- Navegação Estrutural (Breadcrumb) -->
+        <nav class="produto-breadcrumb" aria-label="Navegação estrutural">
+            <a href="/">Início</a>
+            <span class="produto-breadcrumb__sep">/</span>
+            <a href="/catalogo?linha={{ produto.linha_nome|urlencode }}">{{ produto.linha_nome }}</a>
+            <span class="produto-breadcrumb__sep">/</span>
+            <span class="produto-breadcrumb__current" aria-current="page">{{ produto.nome }}</span>
+        </nav>
+
+        <!-- Bloco Superior: Galeria (Esquerda) e Informações de Compra (Direita) -->
+        <div class="produto-grid-topo">
+            <!-- Galeria de Imagens com Carrossel -->
+            <div class="produto-galeria" aria-label="Galeria de fotos do produto">
+                <div class="produto-galeria__viewport" tabindex="0" role="region" aria-label="Visualizador da imagem grande">
+                    <!-- Seta Anterior -->
+                    <button type="button" class="produto-galeria__nav produto-galeria__nav--prev" id="btn-galeria-prev" aria-label="Foto anterior">
+                        <svg width="28" height="42" viewBox="0 0 24 36" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="18 4 6 18 18 32"></polyline>
+                        </svg>
+                    </button>
+
+                    <!-- Imagem Principal Grande -->
+                    <img 
+                        id="produto-galeria-principal"
+                        src="{{ url_for('static', path=produto.imagem_principal) }}" 
+                        alt="{{ produto.nome }}" 
+                        class="produto-galeria__main-img"
+                        width="600"
+                        height="800"
+                    >
+
+                    <!-- Seta Próxima -->
+                    <button type="button" class="produto-galeria__nav produto-galeria__nav--next" id="btn-galeria-next" aria-label="Próxima foto">
+                        <svg width="28" height="42" viewBox="0 0 24 36" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="6 4 18 18 6 32"></polyline>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Miniaturas Inferiores -->
+                <div class="produto-galeria__thumbs" role="tablist" aria-label="Miniaturas de fotos">
+                    {% for img_url in produto.imagens %}
+                    <button 
+                        type="button" 
+                        class="produto-thumb-item {% if loop.first %}is-active{% endif %}" 
+                        role="tab"
+                        aria-selected="{% if loop.first %}true{% else %}false{% endif %}"
+                        aria-label="Ver imagem {{ loop.index }} de {{ produto.imagens|length }}"
+                        data-img-url="{{ url_for('static', path=img_url) }}"
+                        data-alt="{{ produto.nome }} — ângulo {{ loop.index }}"
+                    >
+                        <img src="{{ url_for('static', path=img_url) }}" alt="" loading="lazy" width="120" height="160">
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Informações e Compra -->
+            <div class="produto-info">
+                <!-- Nome Grande com Nota Média à Direita -->
+                <div class="produto-info__header">
+                    <h1 class="produto-info__titulo">{{ produto.nome }}</h1>
+                    {% if produto.media_avaliacoes %}
+                    <div class="produto-info__rating-top" aria-label="Nota média {{ '%.1f'|format(produto.media_avaliacoes) }} de 5 estrelas">
+                        <span>{{ "%.1f"|format(produto.media_avaliacoes) }}</span>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="#4A2E1B" aria-hidden="true">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Preços: Normal sozinho ou Preço com desconto acompanhado pelo original riscado -->
+                <div class="produto-info__precos" aria-label="Preço do produto">
+                    {% if produto.tem_promocao and produto.preco_promocional %}
+                        <span class="produto-preco-atual">{{ produto.preco_promocional|moeda }}</span>
+                        <span class="produto-preco-antigo">{{ produto.preco_base|moeda }}</span>
+                    {% else %}
+                        <span class="produto-preco-atual">{{ produto.preco_base|moeda }}</span>
+                    {% endif %}
+                </div>
+
+                <!-- Formulário de Seleção e Compra -->
+                <form id="form-add-carrinho" action="/carrinho" method="get">
+                    <input type="hidden" name="produto_id" value="{{ produto.id }}">
+                    <input type="hidden" name="tamanho" id="input-tamanho-selecionado" value="{{ produto.tamanho_inicial or 'P' }}">
+                    <input type="hidden" name="cor" id="input-cor-selecionada" value="{{ produto.cor_inicial or 'Azul' }}">
+
+                    <!-- Variação: Tamanho -->
+                    <div class="produto-variacao-bloco">
+                        <span class="produto-variacao-label">Tamanho — <strong id="selected-tamanho-display">{{ produto.tamanho_inicial or 'P' }}</strong></span>
+                        <div class="produto-chips-wrap" role="radiogroup" aria-label="Selecione o tamanho">
+                            {% for item in produto.tamanhos_todos %}
+                            <button 
+                                type="button" 
+                                class="produto-chip {% if item.tamanho == produto.tamanho_inicial %}is-selected{% endif %} {% if not item.disponivel %}is-unavailable{% endif %}"
+                                role="radio"
+                                aria-checked="{% if item.tamanho == produto.tamanho_inicial %}true{% else %}false{% endif %}"
+                                data-tipo="tamanho"
+                                data-valor="{{ item.tamanho }}"
+                                {% if not item.disponivel %}aria-disabled="true" title="Tamanho indisponível"{% endif %}
+                            >
+                                {{ item.tamanho }}
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Variação: Cor -->
+                    <div class="produto-variacao-bloco">
+                        <span class="produto-variacao-label">Cor — <strong id="selected-cor-display">{{ produto.cor_inicial or 'Azul' }}</strong></span>
+                        <div class="produto-chips-wrap" role="radiogroup" aria-label="Selecione a cor">
+                            {% for item in produto.cores_todas %}
+                            <button 
+                                type="button" 
+                                class="produto-chip {% if item.cor == produto.cor_inicial %}is-selected{% endif %} {% if not item.disponivel %}is-unavailable{% endif %}"
+                                role="radio"
+                                aria-checked="{% if item.cor == produto.cor_inicial %}true{% else %}false{% endif %}"
+                                data-tipo="cor"
+                                data-valor="{{ item.cor }}"
+                                {% if not item.disponivel %}aria-disabled="true" title="Cor indisponível"{% endif %}
+                            >
+                                {{ item.cor }}
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Botão Adicionar Ao Carrinho -->
+                    <div class="produto-btn-comprar-wrap">
+                        <button type="submit" class="produto-btn-comprar" id="btn-adicionar-carrinho" aria-label="Adicionar este produto ao carrinho de compras">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            <span>Adicionar Ao Carrinho</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Acordeões: Descrição, Guia de Tamanhos e Reembolso -->
+                <div class="produto-acordeoes">
+                    <!-- 1. Descrição Dinâmica -->
+                    <details class="produto-acordeon" open>
+                        <summary class="produto-acordeon__summary">
+                            <span>Descrição:</span>
+                            <svg class="produto-acordeon__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </summary>
+                        <div class="produto-acordeon__body">
+                            <p>{{ produto.descricao or 'Um modelo romântico e sofisticado confeccionado em tecido refinado, com modelagem anatômica que valoriza a silhueta com extremo conforto e delicadeza.' }}</p>
+                        </div>
+                    </details>
+
+                    <!-- 2. Guia de Tamanhos -->
+                    <details class="produto-acordeon">
+                        <summary class="produto-acordeon__summary">
+                            <span>Guia de Tamanhos:</span>
+                            <svg class="produto-acordeon__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </summary>
+                        <div class="produto-acordeon__body">
+                            <p>
+                                <a href="/perfil#guia-tamanhos" class="produto-guia-link">Clique para saber mais:</a>
+                            </p>
+                        </div>
+                    </details>
+
+                    <!-- 3. Reembolso e Troca -->
+                    <details class="produto-acordeon">
+                        <summary class="produto-acordeon__summary">
+                            <span>Reembolso e Troca:</span>
+                            <svg class="produto-acordeon__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </summary>
+                        <div class="produto-acordeon__body">
+                            <p>Oferecemos 30 dias para o reembolso caso haja arrependimento ou desinteresse com o produto.</p>
+                            <p>Oferecemos trocas caso queira outro tamanho ou cor.</p>
+                            <p>Ambos trocas e reembolsos exigem o retorno do produto em boas condições e preenchimento do formulário respectivo na página da sua compra.</p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================================================================
+             Seção de Avaliações
+             ================================================================== -->
+        <section class="produto-avaliacoes-secao" aria-labelledby="avaliacoes-secao-titulo">
+            <!-- Box Principal de Avaliações -->
+            <div class="avaliacoes-resumo-box">
+                <!-- Coluna 1: Distribuição das Estrelas (5 a 1) -->
+                <div class="avaliacoes-distribuicao" aria-label="Distribuição de notas por estrelas">
+                    {% for nota in [5, 4, 3, 2, 1] %}
+                    <div class="distribuicao-linha">
+                        <span class="distribuicao-linha__num">{{ nota }}</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="#4A2E1B" aria-hidden="true">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <span class="distribuicao-linha__qtd">{{ produto.distribuicao_estrelas.get(nota, 0) }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Coluna 2: Fotos E Vídeos De Compradores -->
+                <div class="avaliacoes-centro">
+                    <h2 class="avaliacoes-titulo-bloco" id="avaliacoes-secao-titulo">Avaliações</h2>
+                    <h3 class="avaliacoes-subtitulo-bloco">Fotos E Videos De Compradores</h3>
+
+                    <div class="avaliacoes-thumbs-compradores" id="compradores-thumbs-container">
+                        {% set ns = namespace(thumb_count=0) %}
+                        {% for av in produto.avaliacoes_com_midia %}
+                            {% for m in av.midias %}
+                                {% if ns.thumb_count < 7 %}
+                                <button 
+                                    type="button" 
+                                    class="comprador-thumb-btn" 
+                                    data-midia-index="{{ ns.thumb_count }}"
+                                    aria-label="Ver mídia enviada por {{ av.autor_nome }}"
+                                >
+                                    <img src="{{ url_for('static', path=m.url) }}" alt="Foto de {{ av.autor_nome }}" loading="lazy" width="70" height="93">
+                                    {% if m.tipo == 'video' %}
+                                    <span class="thumb-video-badge" aria-hidden="true">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="#FFFFFF">
+                                            <polygon points="5 3 19 12 5 21 5 3"/>
+                                        </svg>
+                                    </span>
+                                    {% endif %}
+                                </button>
+                                {% set ns.thumb_count = ns.thumb_count + 1 %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+
+                    {% if produto.avaliacoes_com_midia|length > 0 %}
+                    <button type="button" class="btn-ver-mais-avaliacoes" id="btn-ver-mais-avaliacoes">
+                        Ver Mais
+                    </button>
+                    {% endif %}
+                </div>
+
+                <!-- Coluna 3: Resumo Geral e 5 Estrelas -->
+                <div class="avaliacoes-resumo-geral">
+                    <p class="avaliacoes-geral__baseado">Baseado em</p>
+                    <p class="avaliacoes-geral__total">{{ produto.total_avaliacoes }} Avaliações</p>
+
+                    <div class="avaliacoes-geral__estrelas" aria-label="Média de {{ '%.1f'|format(produto.media_avaliacoes or 0) }} de 5 estrelas">
+                        {% for tipo in produto.estrelas_visuais %}
+                            {% if tipo == 'full' %}
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="#4A2E1B" aria-hidden="true">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                </svg>
+                            {% elif tipo == 'half' %}
+                                <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+                                    <defs>
+                                        <linearGradient id="halfStarSvg_{{ loop.index }}" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="50%" stop-color="#4A2E1B"/>
+                                            <stop offset="50%" stop-color="#F3D8C7"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="url(#halfStarSvg_{{ loop.index }})"/>
+                                </svg>
+                            {% else %}
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="#F3D8C7" aria-hidden="true">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                </svg>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <p class="avaliacoes-geral__nota-texto">{{ "%.1f"|format(produto.media_avaliacoes or 0) }} de 5</p>
+                </div>
+            </div>
+
+            <!-- Cards de Avaliações Sem Mídia (3 em 3) -->
+            <div class="avaliacoes-cards-grid" id="avaliacoes-cards-grid">
+                {% for av in produto.avaliacoes_sem_midia %}
+                <article class="avaliacao-card {% if loop.index > 3 %}is-hidden{% endif %}">
+                    <div class="avaliacao-card__topo">
+                        <div class="avaliacao-card__user">
+                            <span class="user-avatar-icone" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                            </span>
+                            <span class="avaliacao-card__nome">{{ av.autor_nome }}</span>
+                        </div>
+                        <div class="avaliacao-card__nota-singular" aria-label="Nota {{ av.nota }} de 5">
+                            <span>{{ "%.1f"|format(av.nota) }}</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#4A2E1B" aria-hidden="true">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    {% if av.tamanho_comprado %}
+                    <p class="avaliacao-card__tamanho">Tamanho Comprado: {{ av.tamanho_comprado }}</p>
+                    {% endif %}
+
+                    <p class="avaliacao-card__texto">Avaliação: {{ av.comentario }}</p>
+                </article>
+                {% endfor %}
+            </div>
+
+            {% if produto.avaliacoes_sem_midia|length > 3 %}
+            <div class="avaliacoes-carregar-mais-wrap">
+                <button type="button" class="btn-carregar-mais" id="btn-carregar-mais-avaliacoes">
+                    Carregar Mais
+                </button>
+            </div>
+            {% endif %}
+        </section>
+    </div>
+</main>
+
+<!-- ==========================================================================
+     Modal / Lightbox de Fotos e Vídeos de Compradores (8_MadeInLace Produtos2)
+     ========================================================================== -->
+<div class="modal-avaliacao-backdrop" id="modal-avaliacao-backdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Visualizador de fotos e vídeos de avaliações">
+    <div class="modal-avaliacao-dialog">
+        <!-- Lado Esquerdo: Mídia em Tamanho Grande + Navegação em Carrossel -->
+        <div class="modal-avaliacao__midia-lado">
+            <button type="button" class="modal-midia-nav modal-midia-nav--prev" id="modal-midia-prev" aria-label="Avaliação anterior">
+                <svg width="24" height="36" viewBox="0 0 24 36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="18 4 6 18 18 32"></polyline>
+                </svg>
+            </button>
+
+            <img id="modal-midia-img" src="" alt="Mídia de avaliação do comprador" class="modal-midia-elemento">
+            <video id="modal-midia-video" controls playsinline class="modal-midia-elemento" style="display: none;"></video>
+
+            <button type="button" class="modal-midia-nav modal-midia-nav--next" id="modal-midia-next" aria-label="Próxima avaliação">
+                <svg width="24" height="36" viewBox="0 0 24 36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="6 4 18 18 6 32"></polyline>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Lado Direito: Detalhes da Avaliação do Comprador -->
+        <div class="modal-avaliacao__detalhe-lado">
+            <button type="button" class="modal-fechar-btn" id="modal-fechar-btn" aria-label="Fechar janela de avaliação">
+                &times;
+            </button>
+
+            <div class="modal-avaliacao__topo-autor">
+                <span class="user-avatar-icone" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </span>
+                <span class="modal-avaliacao__nome" id="modal-avaliacao-nome">Sandra</span>
+                <span class="modal-avaliacao__nota-singular">
+                    <span id="modal-avaliacao-nota-val">5.0</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#4A2E1B" aria-hidden="true">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                </span>
+            </div>
+
+            <p class="modal-avaliacao__tamanho">
+                Tamanho Comprado: <strong id="modal-avaliacao-tamanho-val">G</strong>
+            </p>
+
+            <p class="modal-avaliacao__texto">
+                Avaliação: <span id="modal-avaliacao-texto-val"></span>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Dados JSON Sanitizados para o Carrossel do Modal -->
+<script id="dados-avaliacoes-midia" type="application/json">
+[
+  {% set ns_json = namespace(first=true) %}
+  {% for av in produto.avaliacoes_com_midia %}
+    {% for m in av.midias %}
+      {% if not ns_json.first %},{% endif %}
+      {
+        "id": {{ av.id }},
+        "autor_nome": {{ av.autor_nome|tojson }},
+        "nota": {{ av.nota }},
+        "tamanho_comprado": {{ (av.tamanho_comprado or "P")|tojson }},
+        "comentario": {{ av.comentario|tojson }},
+        "midia_url": "{{ url_for('static', path=m.url) }}",
+        "midia_tipo": "{{ m.tipo }}"
+      }
+      {% set ns_json.first = false %}
+    {% endfor %}
+  {% endfor %}
+]
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', path='js/modules/produto_detalhe.js') }}" defer></script>
+{% endblock %}

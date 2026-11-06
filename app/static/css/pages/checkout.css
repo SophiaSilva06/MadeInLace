@@ -1,0 +1,652 @@
+/* ==========================================================================
+   MADE IN LACE — CHECKOUT / PAGAMENTO CSS
+   Fidelidade visual estrita a partir de docs/design/11_MadeInLace Pagamento.png
+   e 21_MadeInLace Pagamento2.png.
+   Design autêntico anti-slop, tipografia refinada, acessibilidade WCAG 2.2 AA.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. ESTRUTURA GERAL DA PÁGINA DE PAGAMENTO
+   -------------------------------------------------------------------------- */
+body.checkout-page-body,
+body:has(.checkout-page),
+.site-main:has(.checkout-page),
+.checkout-page {
+    background-color: #EEE6D3 !important;
+}
+
+.checkout-page {
+    min-height: calc(100vh - 280px);
+    padding: 2.5rem 1rem 5rem;
+    color: var(--color-text-main, #4A2E1B);
+}
+
+.checkout-container {
+    max-width: 1040px;
+    margin: 0 auto;
+}
+
+/* Logo da marca centralizado acima das colunas (conforme 11_MadeInLace Pagamento) */
+.checkout-brand-header {
+    text-align: center;
+    margin-bottom: 2.25rem;
+}
+
+.checkout-brand-link {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.checkout-brand-link:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+.checkout-brand-logo {
+    display: block;
+    width: 135px;
+    height: 135px;
+    max-width: 135px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 10px rgba(74, 46, 27, 0.15));
+}
+
+.checkout-brand-title {
+    font-family: 'Alex Brush', cursive;
+    font-size: 3.5rem;
+    color: #9E7455;
+    line-height: 1.05;
+    margin-top: 0.25rem;
+    letter-spacing: 1.5px;
+    display: block;
+}
+
+/* Grid principal em 2 colunas */
+.checkout-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 3.5rem;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .checkout-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   2. COLUNA ESQUERDA: ENDEREÇO E MÉTODO DE PAGAMENTO
+   -------------------------------------------------------------------------- */
+.checkout-left-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Box de Endereço Selecionado */
+.checkout-address-box {
+    border: 1.5px solid #4A2E1B;
+    background-color: transparent;
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-radius: 1px;
+}
+
+.checkout-radio-indicator {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    border-radius: 50%;
+    border: 2px solid #4A2E1B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkout-radio-indicator::after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #4A2E1B;
+}
+
+.checkout-address-text {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    color: #4A2E1B;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+/* Link / Ação Trocar de Endereço */
+.checkout-address-actions {
+    margin-top: -0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.btn-trocar-endereco {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    color: #4A2E1B;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: opacity 150ms ease;
+}
+
+.btn-trocar-endereco:hover {
+    opacity: 0.8;
+}
+
+.btn-trocar-endereco:focus-visible {
+    outline: 2px solid #8C532E;
+    outline-offset: 4px;
+}
+
+/* Box de Método de Pagamento */
+.checkout-payment-box {
+    border: 1.5px solid #4A2E1B;
+    background-color: transparent;
+    padding: 1.5rem 1.75rem 2rem;
+    border-radius: 1px;
+}
+
+.checkout-payment-title {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #4A2E1B;
+    margin: 0 0 1.25rem 0;
+}
+
+.checkout-methods-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+}
+
+/* Opção individual de rádio */
+.checkout-method-option {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkout-method-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.checkout-method-radio {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    border-radius: 50%;
+    border: 2px solid #4A2E1B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 150ms ease;
+}
+
+.checkout-method-radio::after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: background-color 150ms ease;
+}
+
+.checkout-method-input:checked + .checkout-method-radio::after {
+    background-color: #4A2E1B;
+}
+
+.checkout-method-input:focus-visible + .checkout-method-radio {
+    outline: 2px solid #8C532E;
+    outline-offset: 3px;
+}
+
+.checkout-method-label {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    color: #4A2E1B;
+    line-height: 1;
+}
+
+/* Botão Primário: Pagar E Finalizar */
+.checkout-submit-wrapper {
+    margin-top: 1.75rem;
+    text-align: center;
+}
+
+.btn-pagar-finalizar {
+    display: inline-block;
+    width: 100%;
+    max-width: 380px;
+    padding: 0.95rem 2.5rem;
+    background-color: #512E11;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 1px;
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(62, 33, 8, 0.15);
+    transition: background-color 180ms ease, transform 150ms ease;
+}
+
+.btn-pagar-finalizar:hover:not(:disabled) {
+    background-color: #3E2108;
+    transform: translateY(-1px);
+}
+
+.btn-pagar-finalizar:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-pagar-finalizar:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.btn-pagar-finalizar:focus-visible {
+    outline: 2px solid #8C532E;
+    outline-offset: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   3. COLUNA DIREITA: ITENS DO CARRINHO E TOTAIS
+   -------------------------------------------------------------------------- */
+.checkout-right-col {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Lista rolável se tiver mais de 4 itens, página estática */
+.checkout-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-height: 520px; /* acomoda até 4 itens com folga */
+    overflow-y: auto;
+    overflow-x: visible;
+    padding: 14px 14px 12px 6px; /* espaço superior essencial para o badge do 1º item não ser cortado */
+    margin-bottom: 1.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: #D5A98D transparent;
+}
+
+.checkout-items-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.checkout-items-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.checkout-items-list::-webkit-scrollbar-thumb {
+    background: #D5A98D;
+    border-radius: 3px;
+}
+
+/* Item individual */
+.checkout-item-card {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 1.25rem;
+    align-items: center;
+}
+
+.checkout-item-thumb-wrapper {
+    position: relative;
+    width: 90px;
+    height: 110px;
+    background-color: #E2D3BE;
+    border-radius: 2px;
+    overflow: visible;
+}
+
+.checkout-item-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 2px;
+    display: block;
+    background-color: #E2D3BE;
+}
+
+/* Badge circular de quantidade no canto superior direito da imagem (sem corte) */
+.checkout-item-qty-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #3E2108;
+    color: #FFFFFF;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+    z-index: 5;
+}
+    z-index: 2;
+}
+
+.checkout-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.checkout-item-name {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    color: #4A2E1B;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.checkout-item-variation {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    color: #5C3A21;
+    margin: 0;
+    line-height: 1.25;
+}
+
+.checkout-item-price {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    color: #4A2E1B;
+    margin: 0.35rem 0 0 0;
+}
+
+/* Linha divisória de totais */
+.checkout-totals-divider {
+    border: none;
+    border-top: 1px solid #4A2E1B;
+    margin: 0.5rem 0 1.25rem 0;
+}
+
+/* Seção de Totais e Valores */
+.checkout-totals-table {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    font-family: var(--font-serif);
+}
+
+.checkout-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 1.15rem;
+    color: #4A2E1B;
+}
+
+.checkout-total-row--discount {
+    color: #A34828;
+}
+
+.checkout-total-row--final {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+}
+
+/* Destaque em Verde de Frete Grátis (conforme 11_MadeInLace Pagamento) */
+.checkout-free-shipping-text {
+    color: #3E7E55; /* Verde refinado de alto contraste */
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin: 0.35rem 0 0 0;
+}
+
+/* --------------------------------------------------------------------------
+   4. MODAL: MODIFICAR ENDEREÇOS (21_MadeInLace Pagamento2)
+   -------------------------------------------------------------------------- */
+.checkout-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(62, 33, 8, 0.45);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 200ms ease, visibility 200ms ease;
+    padding: 1rem;
+}
+
+.checkout-modal-backdrop.is-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.checkout-modal-card {
+    background-color: #ECCBB5;
+    border: 1px solid #512E11;
+    width: 100%;
+    max-width: 680px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 2rem 2.25rem;
+    position: relative;
+    border-radius: 2px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    color: #2D1D13;
+}
+
+.checkout-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    background: none;
+    border: none;
+    font-size: 1.75rem;
+    color: #512E11;
+    cursor: pointer;
+    line-height: 1;
+    transition: transform 150ms ease;
+}
+
+.checkout-modal-close:hover {
+    transform: scale(1.15);
+}
+
+.checkout-modal-title {
+    text-align: center;
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: #3E2108;
+    margin: 0 0 1.75rem 0;
+}
+
+/* Container de cartões de endereços existentes */
+.checkout-addresses-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Cartão escuro para cada endereço (conforme imagem 21) */
+.checkout-address-item-card {
+    background-color: #512E11;
+    border: 1px solid #3E2108;
+    padding: 1.25rem;
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+    transition: border-color 150ms ease;
+}
+
+.checkout-address-item-card.is-selected {
+    border: 2px solid #ECCBB5;
+}
+
+.checkout-address-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.checkout-modal-radio-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: #ECCBB5;
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+}
+
+.checkout-modal-radio-circle {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid #ECCBB5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkout-modal-radio-circle::after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: background-color 150ms ease;
+}
+
+.checkout-address-radio-input:checked + .checkout-modal-radio-circle::after {
+    background-color: #ECCBB5;
+}
+
+/* Grade de campos de endereço com visual idêntico ao registro */
+.checkout-address-fields-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.checkout-address-fields-grid--full {
+    grid-column: 1 / -1;
+}
+
+.checkout-modal-input {
+    height: 38px;
+    background-color: #ECCBB5;
+    border: 1px solid #3E2108;
+    color: #2D1D13;
+    padding: 0 0.75rem;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.checkout-modal-input::placeholder {
+    color: #63432B;
+    opacity: 0.8;
+}
+
+/* Botão com "+" para adicionar novo endereço */
+.checkout-btn-add-more {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    background-color: #ECCBB5;
+    border: 1.5px solid #3E2108;
+    font-size: 1.5rem;
+    font-family: var(--font-serif);
+    color: #3E2108;
+    cursor: pointer;
+    border-radius: 1px;
+    transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.checkout-btn-add-more:hover {
+    background-color: #E2BBA2;
+    transform: scale(1.05);
+}
+
+.checkout-btn-confirm-address {
+    background-color: #512E11;
+    color: #ECCBB5;
+    border: 1px solid #3E2108;
+    padding: 0.75rem 2rem;
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    cursor: pointer;
+    border-radius: 1px;
+    transition: background-color 150ms ease;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.checkout-btn-confirm-address:hover {
+    background-color: #3E2108;
+}
+
+.btn-remover-endereco {
+    background: transparent;
+    border: 1px solid rgba(236, 203, 181, 0.5);
+    color: #ECCBB5;
+    font-family: var(--font-serif);
+    font-size: 0.85rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-remover-endereco:hover {
+    background: rgba(220, 53, 69, 0.4);
+    border-color: #ff9999;
+    color: #FFFFFF;
+}
+
+.btn-remover-endereco:active {
+    transform: scale(0.96);
+}
+
+.btn-remover-endereco:focus-visible {
+    outline: 2px solid #ECCBB5;
+    outline-offset: 2px;
+}

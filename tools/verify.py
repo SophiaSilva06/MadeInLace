@@ -113,6 +113,9 @@ def main() -> int:
     ap.add_argument("--timeout", type=int, default=900, help="segundos por estágio")
     a = ap.parse_args()
     raiz = Path.cwd()
+    scripts_dir = str(Path(sys.executable).parent)
+    if scripts_dir not in os.environ.get("PATH", ""):
+        os.environ["PATH"] = scripts_dir + os.pathsep + os.environ.get("PATH", "")
 
     if (var := banco_inseguro()):
         print(f"BANCO_NAO_TESTE {var}\nEXIT 2")

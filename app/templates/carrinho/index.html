@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Sua Sacola de Compras — Made In Lace{% endblock %}
+
+{% block extra_css %}
+<style>
+.carrinho-wrapper {
+    padding: var(--space-8) 0 var(--space-12);
+}
+.carrinho-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    color: var(--color-text-main, #4A2E1B);
+    margin-bottom: var(--space-6);
+}
+.carrinho-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: var(--space-8);
+}
+@media (max-width: 860px) {
+    .carrinho-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.carrinho-itens-card {
+    background-color: #FAF4EF;
+    border: 1px solid var(--color-border-subtle, #E8DFD3);
+    border-radius: 4px;
+    padding: var(--space-6);
+}
+.carrinho-resumo-card {
+    background-color: var(--color-topbar-bg, #EDC9AF);
+    border-radius: 4px;
+    padding: var(--space-6);
+    height: fit-content;
+}
+.carrinho-resumo-title {
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    color: var(--color-text-main, #4A2E1B);
+    margin-bottom: var(--space-4);
+}
+.carrinho-empty {
+    text-align: center;
+    padding: var(--space-12) var(--space-4);
+    background-color: #FAF4EF;
+    border: 1px solid var(--color-border-subtle, #E8DFD3);
+    border-radius: 4px;
+}
+.carrinho-empty__icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-4);
+}
+.carrinho-empty__text {
+    font-size: var(--font-size-lg, 1.25rem);
+    color: var(--color-text-main, #4A2E1B);
+    margin-bottom: var(--space-2);
+}
+.carrinho-empty__subtext {
+    color: var(--color-text-muted, #8C7B72);
+    font-size: var(--font-size-sm, 0.875rem);
+    margin-bottom: var(--space-6);
+}
+.carrinho-empty__btn {
+    display: inline-block;
+    padding: 0.85rem 1.8rem;
+    background-color: #8C6246;
+    color: #FFFFFF;
+    text-decoration: none;
+    border-radius: 3px;
+    font-weight: 600;
+    transition: background-color var(--transition-fast);
+}
+.carrinho-empty__btn:hover {
+    background-color: #744E35;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="section-container carrinho-wrapper">
+    <h1 class="carrinho-title">Sua Sacola de Compras</h1>
+
+    {% if aviso == 'vazio' %}
+    <div class="cart-drawer__alert" style="margin-bottom: 24px; max-width: 500px;" role="alert">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>Adicione Produtos Para Ir Ao Pagamento</span>
+    </div>
+    {% endif %}
+
+    {% if itens and itens|length > 0 %}
+        <div class="carrinho-grid">
+            <div class="carrinho-itens-card">
+                <ul class="cart-drawer__list">
+                    {% for it in itens %}
+                    <li class="cart-item">
+                        <img 
+                            src="{% if it.imagem_url.startswith('http') %}{{ it.imagem_url }}{% else %}{{ url_for('static', path=it.imagem_url) }}{% endif %}" 
+                            alt="{{ it.nome }}" 
+                            class="cart-item__thumb" 
+                            width="68" 
+                            height="68"
+                        >
+                        <div class="cart-item__content">
+                            <div>
+                                <h3 class="cart-item__title">{{ it.nome }}</h3>
+                                <p class="cart-item__variation">Variação: {{ it.cor }}, {{ it.tamanho }}</p>
+                            </div>
+                            <div class="cart-item__actions-row">
+                                <span class="cart-item__qty-box">
+                                    <span class="cart-item__qty-val">Qtd: {{ it.quantidade }}</span>
+                                </span>
+                                <span class="cart-item__price-badge">{{ it.preco_unitario_formatado }}</span>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="carrinho-resumo-card">
+                <h2 class="carrinho-resumo-title">Resumo do Pedido</h2>
+                <div class="cart-drawer__total-bar" style="margin-bottom: 16px;">
+                    <span class="cart-drawer__total-label">Total</span>
+                    <span class="cart-drawer__total-val">{{ carrinho.total_formatado }}</span>
+                </div>
+                <a href="/checkout" class="cart-drawer__checkout-btn">IR PARA O PAGAMENTO</a>
+            </div>
+        </div>
+    {% else %}
+        <div class="carrinho-empty">
+            <div class="carrinho-empty__icon" aria-hidden="true">🛍️</div>
+            <h2 class="carrinho-empty__text">Sua sacola está vazia</h2>
+            <p class="carrinho-empty__subtext">Explore nossos vestidos, corsets e saltos exclusivos e adicione seus favoritos!</p>
+            <a href="/produtos" class="carrinho-empty__btn">Descobrir Novidades</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

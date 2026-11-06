@@ -1,0 +1,322 @@
+{% extends "base.html" %}
+
+{% block title %}Pagamento — Made In Lace{% endblock %}
+
+{% block body_class %}checkout-page-body{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/pages/checkout.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="checkout-page">
+    <div class="checkout-container">
+        
+        <!-- Logo Oficial Centralizado no Topo e Nome Caligráfico (11_MadeInLace Pagamento) -->
+        <header class="checkout-brand-header">
+            <a href="/" class="checkout-brand-link" aria-label="Made In Lace — Página Inicial">
+                <img 
+                    src="{{ url_for('static', path='img/site/MadeInLaceLogo.png') }}" 
+                    alt="Made In Lace" 
+                    class="checkout-brand-logo"
+                    width="135"
+                    height="135"
+                >
+                <span class="checkout-brand-title">Made In Lace</span>
+            </a>
+        </header>
+
+        <!-- Grid Principal do Checkout -->
+        <div class="checkout-grid">
+            
+            <!-- ===============================================================
+                 COLUNA ESQUERDA: ENDEREÇO E MÉTODO DE PAGAMENTO
+                 =============================================================== -->
+            <section class="checkout-left-col" aria-label="Endereço de Entrega e Pagamento">
+                
+                <!-- 1. Box de Endereço Selecionado -->
+                <div class="checkout-address-box">
+                    <span class="checkout-radio-indicator" aria-hidden="true"></span>
+                    <span class="checkout-address-text" id="checkout-current-address-text">
+                        {% if resumo.endereco_selecionado %}
+                            {{ resumo.endereco_selecionado.nome }}: {{ resumo.endereco_selecionado.cep }} - {{ resumo.endereco_selecionado.logradouro }}, {{ resumo.endereco_selecionado.numero }}
+                        {% else %}
+                            Nenhum endereço selecionado. Clique abaixo para adicionar.
+                        {% endif %}
+                    </span>
+                    <input 
+                        type="hidden" 
+                        id="selected-address-id" 
+                        value="{{ resumo.endereco_selecionado.id if resumo.endereco_selecionado else '' }}"
+                    >
+                </div>
+
+                <!-- 2. Ação Trocar de Endereço -->
+                <div class="checkout-address-actions">
+                    <button 
+                        type="button" 
+                        id="btn-trocar-endereco" 
+                        class="btn-trocar-endereco"
+                        aria-haspopup="dialog"
+                        aria-controls="modal-modificar-enderecos"
+                    >
+                        Trocar de endereço
+                    </button>
+                </div>
+
+                <!-- 3. Box de Método de Pagamento -->
+                <div class="checkout-payment-box">
+                    <h2 class="checkout-payment-title">Método de pagamento:</h2>
+
+                    <div class="checkout-methods-list" role="radiogroup" aria-label="Métodos de Pagamento Disponíveis">
+                        {% for m in resumo.metodos_pagamento %}
+                            <label class="checkout-method-option" for="metodo-{{ m.slug }}">
+                                <input 
+                                    type="radio" 
+                                    name="metodo_pagamento" 
+                                    id="metodo-{{ m.slug }}" 
+                                    value="{{ m.metodo }}"
+                                    class="checkout-method-input"
+                                    {% if loop.first %}checked{% endif %}
+                                >
+                                <span class="checkout-method-radio" aria-hidden="true"></span>
+                                <span class="checkout-method-label">{{ m.label }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- 4. Botão Primário: Pagar E Finalizar -->
+                <div class="checkout-submit-wrapper">
+                    <button type="button" id="btn-finalizar-compra" class="btn-pagar-finalizar">
+                        Pagar E Finalizar
+                    </button>
+                </div>
+
+            </section>
+
+            <!-- ===============================================================
+                 COLUNA DIREITA: ITENS DO CARRINHO E TOTAIS
+                 =============================================================== -->
+            <section class="checkout-right-col" aria-label="Resumo do Pedido">
+                
+                <!-- Lista rolável se tiver mais de 4 itens, mantendo o restante estático -->
+                <div class="checkout-items-list" id="checkout-items-container">
+                    {% for item in resumo.itens %}
+                        <article class="checkout-item-card" aria-label="{{ item.nome }}">
+                            <div class="checkout-item-thumb-wrapper">
+                                <img 
+                                    src="{% if item.imagem_url.startswith('http') or item.imagem_url.startswith('/') %}{{ item.imagem_url }}{% else %}{{ url_for('static', path=item.imagem_url) }}{% endif %}" 
+                                    alt="{{ item.nome }}" 
+                                    class="checkout-item-img"
+                                    loading="lazy"
+                                >
+                                <!-- Círculo no canto superior direito com a quantidade -->
+                                <span class="checkout-item-qty-badge" aria-label="Quantidade: {{ item.qnt }}">
+                                    {{ item.qnt }}
+                                </span>
+                            </div>
+
+                            <div class="checkout-item-info">
+                                <h3 class="checkout-item-name">{{ item.nome }}</h3>
+                                <p class="checkout-item-variation">{{ item.tamanho }}</p>
+                                <p class="checkout-item-variation">{{ item.cor }}</p>
+                                <p class="checkout-item-price">{{ item.preco_unitario_formatado }}</p>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+
+                <!-- Linha Divisória -->
+                <hr class="checkout-totals-divider">
+
+                <!-- Totais e Valores -->
+                <div class="checkout-totals-table">
+                    <!-- Subtotal -->
+                    <div class="checkout-total-row">
+                        <span>Subtotal:</span>
+                        <span id="checkout-subtotal-val">{{ resumo.subtotal_formatado }}</span>
+                    </div>
+
+                    <!-- Desconto de 1ª Compra (exibido apenas se elegível) -->
+                    <div 
+                        class="checkout-total-row checkout-total-row--discount" 
+                        id="checkout-discount-row"
+                        style="{% if not (resumo.primeira_compra and resumo.valor_desconto > 0) %}display: none;{% endif %}"
+                    >
+                        <span>Desconto (1ª Compra - 10%):</span>
+                        <span id="checkout-discount-val">- {{ resumo.valor_desconto_formatado }}</span>
+                    </div>
+
+                    <!-- Frete -->
+                    <div class="checkout-total-row">
+                        <span>Frete:</span>
+                        <span id="checkout-frete-val">{{ resumo.frete_formatado }}</span>
+                    </div>
+
+                    <!-- Total -->
+                    <div class="checkout-total-row checkout-total-row--final">
+                        <span>Total:</span>
+                        <span id="checkout-total-val">{{ resumo.total_formatado }}</span>
+                    </div>
+
+                    <!-- Aviso de Frete Grátis em Verde -->
+                    <p 
+                        class="checkout-free-shipping-text" 
+                        id="checkout-free-shipping-notice"
+                        style="{% if not resumo.frete_gratis %}display: none;{% endif %}"
+                    >
+                        Frete Grátis
+                    </p>
+                </div>
+
+            </section>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- =======================================================================
+     MODAL: MODIFICAR ENDEREÇOS (21_MadeInLace Pagamento2.png)
+     ======================================================================= -->
+<div 
+    class="checkout-modal-backdrop" 
+    id="modal-modificar-enderecos" 
+    role="dialog" 
+    aria-modal="true" 
+    aria-labelledby="modal-modificar-enderecos-title" 
+    aria-hidden="true"
+>
+    <div class="checkout-modal-card">
+        <button 
+            type="button" 
+            class="checkout-modal-close" 
+            id="btn-fechar-modal-enderecos" 
+            aria-label="Fechar janela de endereços"
+        >
+            &times;
+        </button>
+
+        <h2 id="modal-modificar-enderecos-title" class="checkout-modal-title">Modificar Endereços</h2>
+
+        <!-- Lista de endereços cadastrados -->
+        <div class="checkout-addresses-list" id="checkout-addresses-cards-list">
+            {% for end in resumo.enderecos_usuario %}
+                <div 
+                    class="checkout-address-item-card {% if end.is_selected %}is-selected{% endif %}" 
+                    data-address-id="{{ end.id }}"
+                    data-summary-text="{{ end.nome }}: {{ end.cep }} - {{ end.logradouro }}, {{ end.numero }}"
+                >
+                    <div class="checkout-address-item-header">
+                        <label class="checkout-modal-radio-label" for="addr-radio-{{ end.id }}">
+                            <input 
+                                type="radio" 
+                                name="checkout_selected_address" 
+                                id="addr-radio-{{ end.id }}" 
+                                value="{{ end.id }}"
+                                class="checkout-address-radio-input visually-hidden"
+                                {% if end.is_selected %}checked{% endif %}
+                            >
+                            <span class="checkout-modal-radio-circle" aria-hidden="true"></span>
+                            <span>Nome: {{ end.nome }}</span>
+                        </label>
+                        <button 
+                            type="button" 
+                            class="btn-remover-endereco js-remover-endereco" 
+                            data-endereco-id="{{ end.id }}" 
+                            title="Remover este endereço" 
+                            aria-label="Remover endereço {{ end.nome }}"
+                        >
+                            Remover
+                        </button>
+                    </div>
+
+                    <div class="checkout-address-fields-grid">
+                        <div>
+                            <input type="text" class="checkout-modal-input" value="CEP: {{ end.cep }}" readonly>
+                        </div>
+                        <div>
+                            <input type="text" class="checkout-modal-input" value="Número: {{ end.numero }}" readonly>
+                        </div>
+                        <div class="checkout-address-fields-grid--full">
+                            <input type="text" class="checkout-modal-input" value="Logradouro: {{ end.logradouro }}" readonly>
+                        </div>
+                        <div>
+                            <input type="text" class="checkout-modal-input" value="Bairro: {{ end.bairro }}" readonly>
+                        </div>
+                        <div>
+                            <input type="text" class="checkout-modal-input" value="Cidade: {{ end.cidade }}" readonly>
+                        </div>
+                        <div>
+                            <input type="text" class="checkout-modal-input" value="Estado: {{ end.estado }}" readonly>
+                        </div>
+                        <div>
+                            <input type="text" class="checkout-modal-input" value="Complemento: {{ end.complemento }}" readonly>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Botão "+" para adicionar outro endereço -->
+        <div style="text-align: center; margin: 1.5rem 0 1rem;">
+            <button 
+                type="button" 
+                id="btn-add-more-checkout-address" 
+                class="checkout-btn-add-more" 
+                aria-label="Adicionar outro endereço"
+                title="Adicionar mais um endereço"
+            >
+                +
+            </button>
+        </div>
+
+        <!-- Formulário recolhível para adicionar novo endereço (com os mesmos placeholders do registro) -->
+        <div id="form-novo-endereco-checkout" style="display: none; margin-bottom: 1.5rem; background-color: #512E11; padding: 1.25rem; border-radius: 2px;">
+            <h3 style="color: #ECCBB5; font-family: var(--font-serif); font-size: 1.15rem; margin: 0 0 1rem 0;">Novo Endereço:</h3>
+            <div class="checkout-address-fields-grid">
+                <div class="checkout-address-fields-grid--full">
+                    <input type="text" id="checkout-end-nome" class="checkout-modal-input" placeholder="Ex: Casa, Trabalho">
+                </div>
+                <div>
+                    <input type="text" id="checkout-end-cep" class="checkout-modal-input" placeholder="CEP: 00000-000" maxlength="9">
+                </div>
+                <div>
+                    <input type="text" id="checkout-end-numero" class="checkout-modal-input" placeholder="Número: 123">
+                </div>
+                <div class="checkout-address-fields-grid--full">
+                    <input type="text" id="checkout-end-logradouro" class="checkout-modal-input" placeholder="Logradouro: Rua das Flores, Av. Brasil">
+                </div>
+                <div>
+                    <input type="text" id="checkout-end-bairro" class="checkout-modal-input" placeholder="Bairro: Centro">
+                </div>
+                <div>
+                    <input type="text" id="checkout-end-cidade" class="checkout-modal-input" placeholder="Cidade: São Paulo">
+                </div>
+                <div>
+                    <input type="text" id="checkout-end-estado" class="checkout-modal-input" placeholder="Estado: SP" maxlength="2">
+                </div>
+                <div>
+                    <input type="text" id="checkout-end-complemento" class="checkout-modal-input" placeholder="Complemento: Apto 101, Bloco B">
+                </div>
+            </div>
+            <button type="button" id="btn-salvar-novo-endereco" class="checkout-btn-confirm-address" style="margin-top: 1rem; background-color: #ECCBB5; color: #3E2108; font-weight: 600;">
+                Salvar Endereço
+            </button>
+        </div>
+
+        <!-- Botão Concluir / Confirmar Seleção -->
+        <div style="text-align: center;">
+            <button type="button" id="btn-confirmar-endereco-selecao" class="checkout-btn-confirm-address">
+                Concluir Endereço
+            </button>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', path='js/modules/checkout.js') }}"></script>
+{% endblock %}
